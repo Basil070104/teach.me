@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { SYSTEM_ENTRYPOINTS } from 'next/dist/shared/lib/constants';
 
 // API configuration
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'http://127.0.0.1:5000/';
 
 const TranscriptGenerator = () => {
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ const TranscriptGenerator = () => {
         <button
           onClick={startTranscription}
           disabled={loading}
-          className="w-full bg-white text-black"
+          className="w-full bg-black text-white"
         >
           {loading ? (
             <>
