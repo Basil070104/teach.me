@@ -36,15 +36,15 @@ const TranscriptGenerator = () => {
       // Start polling for transcript status
       // pollInterval.current = setInterval(checkTranscriptStatus, 2000); // Poll every 2 seconds
 
-      console.log("data: ", response.message);
-      //   if (data.status === 'success') {
-      //     setTranscript(data.text);
-      //   } else {
-      //     throw new Error(data.message || 'Failed to get transcript');
-      //   }
+      // console.log("data: ", response.message);
 
-      setTranscript(response.message);
-      setLoading(false);
+      if (response.status == true) {
+        setTranscript(response.message);
+        setLoading(false);
+      }
+      else {
+        throw new Error('Failed to get transcript');
+      }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -55,18 +55,11 @@ const TranscriptGenerator = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl text-lg">
-      <div>
+    <div className="container mx-auto p-4 text-lg h-max">
+      <div >
         Transcript Generator
       </div>
-      <div className="space-y-4">
-        {loading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <>
-          </>
-        )
-        }
+      <div className="">
         <button
           onClick={startTranscription}
           disabled={loading}
@@ -87,13 +80,35 @@ const TranscriptGenerator = () => {
           </div>
         )}
 
-        {transcript && (
-          <div className="mt-4">
+        {transcript ? (
+          <div>
             <h3 className="text-lg font-semibold mb-2 text-white">Generated Transcript:</h3>
-            <div className="bg-muted p-4 rounded-lg whitespace-pre-wrap">
-              {transcript}
+            <div className="mt-4 w-full h-72 bg-black text-white 
+          border border-white/30
+          shadow-[0_0_15px_rgba(255,255,255,0.1)]
+          placeholder-gray-400 resize-none rounded-sm overflow-y-auto">
+
+              <div className="bg-muted p-4 rounded-lg whitespace-pre-wrap relative text-left">
+                {transcript}
+              </div>
             </div>
           </div>
+        ) : (
+          <>
+            <div className="mt-4 w-full h-72 bg-black text-white 
+          border border-white/30 rounded-sm
+          shadow-[0_0_15px_rgba(255,255,255,0.1)]
+          placeholder-gray-400 
+          flex justify-center items-center
+          ">
+              {loading && (
+                <Loader2 className="mr-2 h-20 w-20 animate-spin" />
+              )
+              }
+
+            </div>
+          </>
+
         )}
       </div>
     </div>

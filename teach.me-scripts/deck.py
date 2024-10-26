@@ -93,10 +93,11 @@ class Deck:
 
         return prompt
 
-    def transcript_to_video(self, path):
+    def transcript_to_video(self, path, narration):
         # The text that you want to convert to audio
         f = open(path, "r")
-        mytext = f.read()
+        mytext = narration
+        print(mytext)
 
         # Language ind which you want to convert
         language = "en"
@@ -112,7 +113,7 @@ class Deck:
         myobj.save("audio/lecture.mp3")
 
         # Playing the converted file
-        os.system("audio/lecture.mp3")
+        # os.system("audio/lecture.mp3")
 
     def run(self):
 
@@ -168,10 +169,10 @@ class Deck:
                 break
 
         slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
+        self.transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
         f.close()
 
         return True
-        # transcript_to_video(f"transcripts/lecture_test.txt")
 
 
 # print(get_completion(messages))
