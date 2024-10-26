@@ -6,7 +6,7 @@ import { ref, get } from 'firebase/database'
 import { useParams } from 'next/navigation'
 import Image from "next/image"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import TranscriptGenerator from '../transcript';
+import TranscriptGenerator from '../../components/ui/transcript';
 
 interface FileData {
   url: string
@@ -81,6 +81,8 @@ export default function FilePage() {
             <p>No PDF available.</p>
           )}
         </section>
+
+        <TranscriptGenerator />
       </main>
 
       <footer>
