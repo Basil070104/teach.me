@@ -49,6 +49,7 @@ export default function Home() {
   }
 
   return (
+
     <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-zinc-100 to-white font-[family-name:var(--font-geist-sans)]">
       <header className="text-center mb-12">
         <Image

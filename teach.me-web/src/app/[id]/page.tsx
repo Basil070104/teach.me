@@ -6,6 +6,7 @@ import { ref, get } from 'firebase/database'
 import { useParams } from 'next/navigation'
 import Image from "next/image"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import TranscriptGenerator from '../transcript';
 
 interface FileData {
   url: string
