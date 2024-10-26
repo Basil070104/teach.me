@@ -39,15 +39,6 @@ export default function Home() {
     }
   }
 
-  const handleImageUrlSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (imageUrl) {
-      console.log("Image URL submitted:", imageUrl)
-      // Here you would typically process the image URL
-      // For now, we'll just log it
-    }
-  }
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-zinc-100 to-white font-[family-name:var(--font-geist-sans)]">
       <header className="text-center mb-12">
@@ -106,17 +97,7 @@ export default function Home() {
                 </div>
               </TabsContent>
               <TabsContent value="url">
-                <form onSubmit={handleImageUrlSubmit} className="space-y-4">
-                  <Label htmlFor="image-url">Image URL</Label>
-                  <Input
-                    id="image-url"
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                  />
-                  <Button type="submit" className="w-full">Submit Image URL</Button>
-                </form>
+                {/* Handle image URL submission here */}
               </TabsContent>
             </Tabs>
           </CardContent>
