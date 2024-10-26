@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import { InputFile } from "../components/ui/fileInput";
-import { uploadFileInfo } from '../lib/firebaseUtils'; 
+import { uploadFileInfo } from '../lib/firebaseUtils';
 
 export default function Home() {
   const router = useRouter();
@@ -23,8 +23,12 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       {/* Header */}
       <div className="flex flex-col items-center justify-center gap-8">
-        <Image src="/logo.svg" alt="Teach.me" width={128} height={128} />
-        <h1 className="text-4xl font-bold text-zinc-950">TeachMe</h1>
+        <Image
+          src="/TeachMe-logo.png"
+          alt="TeachMe"
+          width={300}
+          height={80}
+        />
         <p className="text-lg text-zinc-500">
           TeachMe is a platform for learning and online. Use if you skipped your lectures.
         </p>

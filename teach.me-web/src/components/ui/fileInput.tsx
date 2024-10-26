@@ -19,6 +19,7 @@ export function InputFile({ width = "100%", height = "300px", onChange }: InputF
       <Input
         id="picture"
         type="file"
+        accept=".pdf"
         style={{ width, height }}
         className="rounded-md border-zinc-200"
         onChange={handleFileChange}
