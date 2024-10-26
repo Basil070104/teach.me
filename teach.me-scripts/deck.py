@@ -124,7 +124,7 @@ class Deck:
 
         # Now let's pass the first 20 of these images (in order) to Claude at once and ask it a question about the deck. Why 20? Currently, the Anthropic API only allows you to pass in a maximum of 20 images. While this number will likely increase over time, we have some helpful tips for how to manage it later in this recipe.
         previous_slide_narratives = []
-        f = open("transcripts/lecture_test.txt", "a")
+        f = open("transcripts/lecture_test.txt", "w")
         # f.write("Now the file has more content!")
         early_break = 0
 
@@ -164,7 +164,7 @@ class Deck:
             # If you want to see the narration we produced, uncomment the below line
             # print(narration)
             early_break += 1
-            if early_break == 10:
+            if early_break == 2:
                 break
 
         slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)

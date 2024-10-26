@@ -1,11 +1,14 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from deck import Deck
 import threading
 import sys
 import time
 import itertools
 
+
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
@@ -21,9 +24,10 @@ def hello():
     return f"Hello, {name}!"
 
 
-@app.route("/get_transcript")
+@app.route("/get_transcript", methods=["GET"])
 def get_transcript():
     MODEL_NAME = "claude-3-opus-20240229"
+    path = "pdfs/lecture_test.pdf"
     obj = Deck(model=MODEL_NAME, pdf_path="pdfs/lecture_test.pdf")
 
     print("\n=== Started An Event ===")
@@ -33,6 +37,8 @@ def get_transcript():
     def transcription_fetch():
         try:
             obj.run()
+            # print("Here\n")
+            # pass
         finally:
             event.set()
             stop_animation.set()  # Signal animation to stop
@@ -64,7 +70,8 @@ def get_transcript():
     with open("transcripts/lecture_test.txt", "r") as f:
         text = f.read()
 
-    return text
+    data = {"message": text, "file_name": path, "status": True}
+    return jsonify(data)
 
 
 if __name__ == "__main__":
