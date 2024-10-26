@@ -98,7 +98,7 @@ def main():
 
     # Now let's pass the first 20 of these images (in order) to Claude at once and ask it a question about the deck. Why 20? Currently, the Anthropic API only allows you to pass in a maximum of 20 images. While this number will likely increase over time, we have some helpful tips for how to manage it later in this recipe.
     previous_slide_narratives = []
-    f = open("transcripts/lecture_test.txt", "a")
+    f = open("transcripts/lecture_test.txt", "w")
     f.write("Now the file has more content!")
     early_break = 0
 

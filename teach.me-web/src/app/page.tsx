@@ -59,7 +59,7 @@ export default function Home() {
           className="mx-auto mb-6"
         />
         <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-          TeachMe is your go-to platform for online learning. Perfect for catching up on missed lectures.
+          TeachMe is for when your professor doesn't upload the lectures.
         </p>
       </header>
       

@@ -8,3 +8,13 @@ TCP provides reliable, in-order delivery through application multiplexing, ACKs,
 A TCP connection is identified by a 5-tuple of source and destination IPs, ports, and protocol. The connection setup exchanges an initial sequence number (ISN), used to mark the start of the byte stream. Each endpoint randomly chooses its own ISN to avoid overlap between connections.
 
 Random ISNs prevent issues like port number reuse and TCP sequence number prediction attacks. If a connection's ISN was always 0, an attacker could easily guess valid sequence numbers. Randomizing the ISN makes it much harder for attackers to send counterfeit packets and hijack the connection.
+Now the file has more content!
+Welcome to ECE 46300, Transport Layer IV. I'm Professor Vishal Shrivastav, and this fall semester, we'll dive into the intricacies of the transport layer in computer networks. This layer plays a crucial role in ensuring reliable, efficient data transport between hosts. Let's begin our exploration of this fascinating topic.
+
+TCP provides reliable, in-order delivery to applications through features like application multiplexing, ACKs and retransmissions, flow control, and congestion control. It uses byte stream abstraction, communicating with a byte stream rather than packets. TCP is connection-oriented, establishing a pairwise sender-receiver connection before sending data.
+
+TCP maintains connection state like initial sequence numbers and window sizes to provide reliable, in-order delivery. This connection-oriented approach, using a pairwise sender-receiver connection established before data transfer, contrasts with connectionless protocols. TCP's byte stream abstraction communicates with a stream of bytes rather than discrete packets.
+
+A TCP connection is identified by a 5-tuple of source and destination IPs, ports, and protocol. The connection setup exchanges an initial sequence number (ISN), randomly chosen by each endpoint, to mark the start of the byte stream. The ISN enables the receiver to order the incoming byte stream.
+
+Random ISNs prevent port number reuse issues and TCP sequence prediction attacks. If a connection's ISN was always 0, an attacker could easily guess valid sequence numbers. Randomizing the ISN for each new connection mitigates these practical issues, enhancing TCP's reliability and security.
