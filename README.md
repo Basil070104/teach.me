@@ -10,6 +10,11 @@
 
 Clone this repo
 
+'''bash
+source teach-me.env/bin/activate
+'''
+Activate the right environment packages
+
 ```bash
 npm run dev
 ```
