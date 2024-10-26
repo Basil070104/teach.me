@@ -6,7 +6,7 @@ import anthropic
 import os
 import re
 from tqdm import tqdm
-import gtts
+# import gtts
 
 MODEL_NAME = "claude-3-opus-20240229"
 
@@ -93,26 +93,26 @@ class Deck:
 
         return prompt
 
-    def transcript_to_video(self, path):
-        # The text that you want to convert to audio
-        f = open(path, "r")
-        mytext = f.read()
+    # def transcript_to_video(self, path):
+    #     # The text that you want to convert to audio
+    #     f = open(path, "r")
+    #     mytext = f.read()
 
-        # Language ind which you want to convert
-        language = "en"
+    #     # Language ind which you want to convert
+    #     language = "en"
 
-        # Passing the text and language to the engine,
-        # here we have marked slow=False. Which tells
-        # the module that the converted audio should
-        # have a high speed
-        myobj = gtts.gTTS(text=mytext, lang=language, slow=False)
+    #     # Passing the text and language to the engine,
+    #     # here we have marked slow=False. Which tells
+    #     # the module that the converted audio should
+    #     # have a high speed
+    #     myobj = gtts.gTTS(text=mytext, lang=language, slow=False)
 
-        # Saving the converted audio in a mp3 file named
-        # welcome
-        myobj.save("audio/lecture.mp3")
+    #     # Saving the converted audio in a mp3 file named
+    #     # welcome
+    #     myobj.save("audio/lecture.mp3")
 
-        # Playing the converted file
-        os.system("audio/lecture.mp3")
+    #     # Playing the converted file
+    #     os.system("audio/lecture.mp3")
 
     def run(self):
 
