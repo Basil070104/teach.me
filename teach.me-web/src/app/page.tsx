@@ -35,7 +35,6 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-4">
           <h2 className="text-2xl font-bold text-zinc-950">PDF</h2>
           <p className="text-lg text-zinc-500">Input a file.</p>
-          {/* Single File Input component */}
           <InputFile onChange={handleFileUpload} />
         </div>
       </div>
