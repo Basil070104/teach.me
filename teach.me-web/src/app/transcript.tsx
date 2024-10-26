@@ -70,7 +70,7 @@ const TranscriptGenerator = () => {
         <button
           onClick={startTranscription}
           disabled={loading}
-          className="w-full bg-white text-black"
+          className="w-full bg-black text-white"
         >
           {loading ? (
             <>
