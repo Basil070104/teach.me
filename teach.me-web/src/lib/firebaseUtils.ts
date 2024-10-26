@@ -5,7 +5,8 @@ import { ref as dbRef, set, push } from 'firebase/database';
 const storage = getStorage();
 
 export const uploadFileInfo = async (file) => {
-  const storageRef = ref(storage, `uploads/${file.name}`);
+  const uniqueId = Date.now();
+  const storageRef = ref(storage, `uploads/${uniqueId}_${file.name}`); // Prepend the unique ID to the file name
   await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(storageRef);
   const fileId = push(dbRef(database, 'uploads')).key;
@@ -16,6 +17,7 @@ export const uploadFileInfo = async (file) => {
     size: file.size,
     type: file.type,
     createdAt: new Date().toISOString(),
+    uniqueId: uniqueId, // Store the unique ID in the database for reference
   });
 
   return fileId; 
