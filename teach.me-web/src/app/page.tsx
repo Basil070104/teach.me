@@ -14,9 +14,9 @@ export default function Home() {
       </div>
       <div className="flex flex-col items-center justify-center gap-8">
         <div className="flex flex-col items-center justify-center gap-4">
-          <h2 className="text-2xl font-bold text-zinc-950">Sign In</h2>
+          <h2 className="text-2xl font-bold text-zinc-950">PDF</h2>
           <p className="text-lg text-zinc-500">
-            Sign in to your account to access your courses and start learning.
+            Input a file.
           </p>
           <InputFile />
         </div>
