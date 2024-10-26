@@ -12,14 +12,7 @@ export default function Home() {
           TeachMe is a platform for learning and online. Use if you skipped your lectures.
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <h2 className="text-2xl font-bold text-zinc-950">Sign Up</h2>
-          <p className="text-lg text-zinc-500">
-            Sign up to get started with Teach.me. It is free and easy to get
-            started.
-          </p>
-        </div>
+      <div className="flex flex-col items-center justify-center gap-8">
         <div className="flex flex-col items-center justify-center gap-4">
           <h2 className="text-2xl font-bold text-zinc-950">Sign In</h2>
           <p className="text-lg text-zinc-500">
