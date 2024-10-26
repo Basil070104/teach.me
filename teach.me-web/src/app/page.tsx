@@ -46,7 +46,7 @@ export default function Home() {
       {/* Get Started */}
       <div className="flex flex-col items-center justify-center gap-4">
         <h2 className="text-2xl font-bold text-zinc-950">Get Started</h2>
-        <p className="text-lg text-zinc-500">Get started with TeachMe.</p>
+        <p className="text-lg text-zinc-500">TeachMe 2024</p>
       </div>
     </div>
   );
