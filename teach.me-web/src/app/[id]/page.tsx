@@ -14,6 +14,7 @@ import { Play, Pause } from "lucide-react"
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { MessageCircle, X } from 'lucide-react'
+import ParticleBackground from '@/components/ui/ParticleBackground'
 
 interface FileData {
   url: string
@@ -110,6 +111,7 @@ export default function FilePage() {
         } else {
           console.error('No file found for this ID.')
         }
+
         await startTranscription(data)
         await getRef()
         setLoading(false)
@@ -147,7 +149,8 @@ export default function FilePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen flex flex-col font-[family-name:var(--font-geist-sans)]">
+      {/* <ParticleBackground /> */}
       <header className="py-4 bg-black shadow-sm">
         <div className="container mx-auto px-4">
           <Image
@@ -179,6 +182,8 @@ export default function FilePage() {
                     src="/cat.mp4"
                     controls
                     className="rounded-md object-cover w-full h-full"
+                    autoPlay
+
                   >
                     Your browser does not support the video tag.
                   </video>
@@ -197,12 +202,12 @@ export default function FilePage() {
             </CardHeader>
             <CardContent className="flex-grow flex flex-col">
               <div className="bg-black p-3 rounded-md mb-4 flex items-center space-x-2">
-                <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1 text-zinc-200">
+                <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1">
                   {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                 </Button>
                 <Slider
                   value={[progress]}
-                  max={600}
+                  max={100}
                   step={1}
                   onValueChange={handleProgressChange}
                   className="flex-grow"
@@ -211,21 +216,24 @@ export default function FilePage() {
                   {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
                 </div>
               </div>
-              <div className="bg-black p-4 rounded-md border flex-grow overflow-y-auto text-zinc-200">
-                {loadTran ? (
-                  <div className="flex flex-col space-y-2">
-                    {/* Applying the flashing animation to Skeleton components */}
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                    <Skeleton className="h-4 w-full flashing-skeleton" />
-                  </div>
-                ) : (
-                  transcript || "No transcript available."
-                )}
-              </div>
+              {loading ? (
+                <>
+                  <Skeleton className="w-full h-full skeleton-flash" />
+                </>
+
+              ) : (
+                <>
+
+                  <textarea readOnly className="bg-black p-4 rounded-md border flex-grow overflow-y-auto">
+                    {/* <p className="text-zinc-600">
+                      Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
+                    </p> */}
+                    {
+                      transcript
+                    }
+                  </textarea>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -239,13 +247,12 @@ export default function FilePage() {
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>
             </CardHeader>
-            <CardContent className="flex-grow flex flex-col">
+            <CardContent className="flex-grow flex flex-col min-h-60 w-full">
               {loading ? (
                 <Skeleton className="w-full h-full" />
               ) : (
                 <>
-
-                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+                  <textarea readOnly className="bg-black p-4 rounded-md border flex-grow overflow-y-auto w-full">
                     {
                       refer
                     }
@@ -309,6 +316,6 @@ export default function FilePage() {
           animation: flash 1s infinite;
         }
       `}</style>
-    </div>
+    </div >
   )
 }

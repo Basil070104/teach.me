@@ -7,9 +7,9 @@ TCP provides reliable, in-order delivery through:
 - Application multiplexing
 - ACKs and retransmissions for reliability
 - Flow and congestion control
-It uses byte stream abstraction, sending a stream of bytes rather than packets.
-TCP is connection-oriented, establishing a sender-receiver connection to maintain state like sequence numbers and window size before transmitting data.
+It uses byte stream abstraction, communicating with a byte stream, not packets.
+TCP is connection-oriented, establishing a connection between sender and receiver to maintain connection-specific state before sending data.
 
-ACKs, or acknowledgements, are crucial for TCP's reliability. The receiver sends ACKs to confirm data received, allowing the sender to know what has arrived successfully and what needs to be retransmitted. ACKs provide feedback to ensure all data is delivered in-order to the receiving application, maintaining data integrity.
+ACKs, or acknowledgements, are crucial for TCP's reliability. The receiver sends ACKs to confirm data received, allowing the sender to know what has arrived successfully and what needs to be retransmitted. ACKs provide feedback to ensure all data is delivered reliably, in the correct order, to the application.
 
 The sequence and acknowledgement numbers in the TCP header are both 32 bits long. The sequence number identifies the byte number of the first byte of data, while the acknowledgement number confirms the last byte successfully received, requesting the next expected byte. These fields enable reliable, in-order data delivery.
