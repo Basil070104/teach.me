@@ -17,12 +17,13 @@ MODEL_NAME = "claude-3-opus-20240229"
 
 
 class Deck:
-    def __init__(self, model, pdf_path):
+    def __init__(self, model, pdf_path, id_value=None):
         self.client = anthropic.Anthropic()
         self.model = model
         self.pdf_path = pdf_path
         # self.path_name = pdf_path.split("/")[1]
         self.path_name = "lecture"
+        self.id_value = id_value
 
         # if not firebase_admin._apps:
         cred = credentials.Certificate("../teach.me-env/serviceAccountKey.json")
@@ -36,6 +37,13 @@ class Deck:
         # self.bucket = self.storage_client.bucket(self.bucket_name)
         
 
+    def store_id(self):
+        if self.id_value:
+            # Logic to store the ID, e.g., save it to a database or log it
+            print(f"Storing ID: {self.id_value}")  # For demonstration
+            # You could also save it to Firebase or any other storage solution
+        else:
+            print("No ID provided to store.")
 
     def download_pdf(self):
         """Download PDF from URL and return as bytes"""

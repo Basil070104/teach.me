@@ -65,20 +65,34 @@ export default function FilePage() {
         const fileRef = ref(database, `uploads/${id}`)
         const snapshot = await get(fileRef)
         const data = snapshot.val()
-
+  
         if (data) {
-          setFileData(data)
+          setFileData(data);
+          
+          // Send the ID to the server
+          try {
+            await fetch(`${API_BASE_URL}/store_id`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id })  // Send the ID
+            });
+          } catch (error) {
+            console.error('Error storing ID:', error);
+          }
         } else {
-          console.error('No file found for this ID.')
+          console.error('No file found for this ID.');
         }
-        startTranscription(data)
-        setLoading(false)
+        startTranscription(data);
+        setLoading(false);
       }
     }
-
-    fetchFileData()
-
-  }, [id])
+  
+    fetchFileData();
+  
+  }, [id]);
+  
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying)
