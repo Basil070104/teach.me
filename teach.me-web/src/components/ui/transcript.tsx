@@ -35,8 +35,9 @@ const TranscriptGenerator = () => {
       setLoading(false);
     }
 
-
   };
+
+
 
   return (
     <div className="container mx-auto p-4 text-lg h-max">
