@@ -1,4 +1,5 @@
 
-This lab covers distributed routing protocols. You'll implement network routing and forwarding using routing tables you create. Routers and clients never fail, and you can assume no packet drops, but link status and cost can change dynamically. Your solution must be resilient to such network changes.
+This lab covers distributed routing protocols. You'll implement network routing and forwarding using routing tables. Routers forward data packets between source and destination nodes. You'll also do the Honors milestone, extending the Link State routing protocol. The source code will run in a simulated network environment.
 
-To implement the routing protocols, you'll need to understand the network configuration file format and Python code structure. The json file specifies the network topology and link costs. Use the provided Python code templates to implement distance vector routing and link state routing, and test your code thoroughly before submitting.
+This slide explains how to run the Python code for the lab. Use the provided JSON configuration files to specify the simulated network setup. Run the Distance Vector routing with "python3 network.py 01.json DV" and run the Link State routing for Honors milestone with "python3 network.py 01.json LS".
+ submitting.

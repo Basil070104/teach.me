@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from deck import Deck
+from gem import Gem
 import threading
 import sys
 import time

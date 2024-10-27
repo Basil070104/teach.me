@@ -158,6 +158,28 @@ export default function FilePage() {
                     {/* <p className="text-zinc-600">
                       Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
                     </p> */}
+                    {
+                      transcript
+                    }
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        <div >
+          <Card className="lg:col-span-1 flex flex-col mt-4 h-60">
+            <CardHeader className="pb-2">
+              <CardTitle>Extra Information for Guidance</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow flex flex-col">
+              {loading ? (
+                <Skeleton className="w-full h-full" />
+              ) : (
+                <>
+
+                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+
                   </div>
                 </>
               )}
