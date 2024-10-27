@@ -34,6 +34,7 @@ export default function FilePage() {
   const [error, setError] = useState('');
   const [refer, setRefer] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   let temp = ''
 
@@ -131,6 +132,19 @@ export default function FilePage() {
   const handleProgressChange = (newValue: number[]) => {
     setProgress(newValue[0])
   }
+
+  const handleChatToggle = () => {
+    if (isOpen) {
+      // Trigger fade-out effect
+      setIsFadingOut(true);
+      setTimeout(() => {
+        setIsOpen(false); // Close chat after fade out
+        setIsFadingOut(false); // Reset fade state
+      }, 1000); // Match with the CSS transition duration
+    } else {
+      setIsOpen(true); // Open chat
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-black font-[family-name:var(--font-geist-sans)]">
@@ -243,33 +257,35 @@ export default function FilePage() {
         </div>
 
         <div className="fixed bottom-16 right-16">
-          {/* Chat Window */}
-          {isOpen && (
-            <Card className="fixed bottom-[calc(64px+10px)] right-[16px] w-80 h-96 bg-black shadow-lg rounded-lg overflow-hidden z-[60]"
-            data-aos="fade-left">
-              <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="text-zinc-200 font-semibold">Chat</h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="p-4 h-72 overflow-y-auto">
-                <p className="text-zinc-200">Chat content goes here...</p>
-              </div>
-            </Card>
-          )}
+        {/* Chat Window */}
+        {isOpen && (
+          <Card 
+            className={`fixed bottom-[calc(64px+10px)] right-[16px] w-80 h-96 bg-black shadow-lg rounded-lg overflow-hidden z-[60] ${isFadingOut ? 'fade-out' : ''}`}
+            data-aos="fade-left"
+          >
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-zinc-200 font-semibold">Chat</h3>
+              <button
+                onClick={handleChatToggle}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 h-72 overflow-y-auto">
+              <p className="text-zinc-200">Chat content goes here...</p>
+            </div>
+          </Card>
+        )}
 
-          {/* Circle Button */}
+        {/* Circle Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleChatToggle}
           className="fixed bottom-[16px] right-[16px] w-[40px] h-[40px] bg-black hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors z-[60]"
         >
           <MessageCircle size={24} />
         </button>
-        </div>
+      </div>
       </main>
 
       <footer className="py-4 bg-black text-zinc-600 text-center text-sm">
