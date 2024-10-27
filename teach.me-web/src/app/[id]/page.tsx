@@ -83,8 +83,8 @@ export default function FilePage() {
 
     // Initialize AOS animations
     AOS.init({
-      duration: 1000, // animation duration
-      easing: 'ease-in-out', // animation easing
+      duration: 1250, // animation duration
+      easing: 'ease-in-out',
     });
   }, [id])
 
@@ -114,9 +114,10 @@ export default function FilePage() {
 
       <main className="flex-grow container mx-auto px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-2">
+          {/* Video Content Card */}
           <Card
             className="lg:col-span-1"
-            data-aos="fade-right"  // Slide the video player in from the left
+            data-aos="fade-right"
           >
             <CardHeader className="pb-2">
               <CardTitle>Video Content</CardTitle>
@@ -138,9 +139,10 @@ export default function FilePage() {
             </CardContent>
           </Card>
 
+          {/* Transcript Card */}
           <Card
             className="lg:col-span-1 flex flex-col"
-            data-aos="fade-left"  // Slide the transcript card in from the right
+            data-aos="fade-left"
           >
             <CardHeader className="pb-2">
               <CardTitle>Transcript Generator</CardTitle>
@@ -182,8 +184,9 @@ export default function FilePage() {
         
         <div 
           className="lg:col-span-1 flex flex-col mt-4 h-60"
-          data-aos="fade-up"  // Slide up the extra information from the bottom
+          data-aos="fade-up"
         >
+          {/* Additional Information Card */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>

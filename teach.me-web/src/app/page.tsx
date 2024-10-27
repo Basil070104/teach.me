@@ -12,7 +12,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { AlertCircle, FileText } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // Import AOS styles
+import 'aos/dist/aos.css';
 
 export default function Home() {
   const router = useRouter()
@@ -20,9 +20,8 @@ export default function Home() {
   const [fileName, setFileName] = useState('')
   const [fileError, setFileError] = useState('')
 
-  // Initialize AOS when the component mounts
   useEffect(() => {
-    AOS.init({ duration: 1000 }) // Adjust duration if needed
+    AOS.init({ duration: 1250 })
   }, [])
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

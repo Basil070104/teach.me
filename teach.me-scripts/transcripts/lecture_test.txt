@@ -1,4 +1,6 @@
 
-This exercise involves writing a Python program for software sales discounts. Based on the quantity purchased, discounts range from 10% to 42%. The program should prompt for the quantity, calculate and display the discount amount and total purchase price, formatted to match the provided sample output.
+Today we'll review some basic 3D surfaces: lines, parabolas, ellipses, and hyperbolas. Each is defined by a specific equation, as shown in the examples. Note the special case for the ellipse and hyperbola equations when the coefficients a and b are equal, resulting in a circle.
 
-This slide shows the expected output for the software sales program. It demonstrates handling three different purchase quantities, calculating the appropriate discount percentage for each, and displaying the discounted total price. Use this as a guide when testing your program to ensure it produces the correct results.
+Cylinders are 3D shapes formed by extending a 2D curve into the third dimension. A "BLAH" 2D curve becomes a "BLAH cylinder" in 3D. Examples:
+(a) Extending a circle (x^2 + y^2 = 1) in the z-direction forms a circular cylinder.
+(b) Extending a cosine curve (z = cos(x)) in the y-direction forms a cosine cylinder.
