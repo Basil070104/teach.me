@@ -6,7 +6,8 @@ import anthropic
 import os
 import re
 from tqdm import tqdm
-# import gtts
+import gtts
+import requests
 
 MODEL_NAME = "claude-3-opus-20240229"
 
@@ -17,12 +18,28 @@ class Deck:
         self.client = anthropic.Anthropic()
         self.model = model
         self.pdf_path = pdf_path
-        self.path_name = pdf_path.split("/")[1]
+        # self.path_name = pdf_path.split("/")[1]
+        self.path_name = "lecture"
+
+    def download_pdf(self):
+        """Download PDF from URL and return as bytes"""
+        response = requests.get(self.pdf_path)
+        if response.status_code != 200:
+            raise Exception(
+                f"Failed to download PDF. Status code: {response.status_code}"
+            )
+        return response.content
 
     # Define the function to convert a pdf slide deck to a list of images. Note that we need to ensure we resize images to keep them within Claude's size limits.
     def pdf_to_base64_pngs(self, quality=75, max_size=(1024, 1024)):
-        # Open the PDF file
-        doc = fitz.open(self.pdf_path)
+        # Download the PDF content
+        pdf_content = self.download_pdf()
+
+        # Create a temporary buffer for the PDF content
+        pdf_buffer = io.BytesIO(pdf_content)
+
+        # Open the PDF from the buffer
+        doc = fitz.open(stream=pdf_buffer, filetype="pdf")
 
         # Iterate through each page of the PDF
         for page_num in range(doc.page_count):
@@ -93,10 +110,11 @@ class Deck:
 
         return prompt
 
-    def transcript_to_video(self, path, transcript):
+    def transcript_to_video(self, path, narration):
         # The text that you want to convert to audio
         f = open(path, "r")
-        mytext = slide_narration
+        mytext = narration
+        # print(mytext)
 
         # Language ind which you want to convert
         language = "en"
@@ -111,8 +129,10 @@ class Deck:
         # welcome
         myobj.save("audio/lecture.mp3")
 
-    #     # Playing the converted file
-    #     os.system("audio/lecture.mp3")
+        return myobj
+
+    # Playing the converted file
+    # os.system("audio/lecture.mp3")
 
     def run(self):
 
@@ -168,11 +188,13 @@ class Deck:
                 break
 
         slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
+        audio = self.transcript_to_video(
+            f"transcripts/lecture_test.txt", slide_narration
+        )
         f.close()
-        transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
+        self.transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
 
-        return True
-    
+        return True, audio
 
 
 # print(get_completion(messages))

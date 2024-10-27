@@ -1,4 +1,6 @@
 
-Welcome to ECE 46300, Transport Layer IV. In this course, we will dive into the intricacies of the transport layer, building upon the knowledge from previous courses. Our instructor for this semester is Vishal Shrivastav. Let's begin our exploration of this crucial layer in computer networking.
+Today we'll review some basic 3D surfaces: lines, parabolas, ellipses, and hyperbolas. Each is defined by a specific equation, as shown in the examples. Note the special case for the ellipse and hyperbola equations when the coefficients a and b are equal, resulting in a circle.
 
-The Transmission Control Protocol provides reliable, in-order delivery to applications through features like application multiplexing, ACKs and retransmissions, flow control, and congestion control. TCP uses byte stream abstraction, communicating with applications using a byte stream rather than packets. It is connection-oriented, establishing a pairwise sender-receiver connection before sending data.
+Cylinders are 3D shapes formed by extending a 2D curve into the third dimension. A "BLAH" 2D curve becomes a "BLAH cylinder" in 3D. Examples:
+(a) Extending a circle (x^2 + y^2 = 1) in the z-direction forms a circular cylinder.
+(b) Extending a cosine curve (z = cos(x)) in the y-direction forms a cosine cylinder.
