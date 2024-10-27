@@ -83,24 +83,22 @@ export default function FilePage() {
 
     // Initialize AOS animations
     AOS.init({
-      duration: 1250, // animation duration
+      duration: 1250,
       easing: 'ease-in-out',
     });
   }, [id])
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying)
-    // Here you would typically start or pause the actual audio playback
   }
 
   const handleProgressChange = (newValue: number[]) => {
     setProgress(newValue[0])
-    // Here you would typically seek the audio to the new position
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-100 to-white font-[family-name:var(--font-geist-sans)]">
-      <header className="py-4 bg-white shadow-sm">
+    <div className="min-h-screen flex flex-col bg-black font-[family-name:var(--font-geist-sans)]">
+      <header className="py-4 bg-black shadow-sm">
         <div className="container mx-auto px-4">
           <Image
             src="/TeachMe-logo.png"
@@ -116,7 +114,7 @@ export default function FilePage() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Video Content Card */}
           <Card
-            className="lg:col-span-1"
+            className="lg:col-span-1 bg-black text-zinc-200"
             data-aos="fade-right"
           >
             <CardHeader className="pb-2">
@@ -141,20 +139,20 @@ export default function FilePage() {
 
           {/* Transcript Card */}
           <Card
-            className="lg:col-span-1 flex flex-col"
+            className="lg:col-span-1 flex flex-col bg-black text-zinc-200"
             data-aos="fade-left"
           >
             <CardHeader className="pb-2">
               <CardTitle>Transcript Generator</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col">
-              <div className="bg-zinc-100 p-3 rounded-md mb-4 flex items-center space-x-2">
-                <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1">
+              <div className="bg-black p-3 rounded-md mb-4 flex items-center space-x-2">
+                <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1 text-zinc-200">
                   {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                 </Button>
                 <Slider
                   value={[progress]}
-                  max={600}  // Set the max to 10 minutes (600 seconds)
+                  max={600}
                   step={1}
                   onValueChange={handleProgressChange}
                   className="flex-grow"
@@ -163,7 +161,7 @@ export default function FilePage() {
                   {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+              <div className="bg-black p-4 rounded-md border flex-grow overflow-y-auto text-zinc-200">
                 {loadTran ? (
                   <div className="flex flex-col space-y-2">
                     {/* Applying the flashing animation to Skeleton components */}
@@ -181,13 +179,13 @@ export default function FilePage() {
             </CardContent>
           </Card>
         </div>
-        
+
         <div 
           className="lg:col-span-1 flex flex-col mt-4 h-60"
           data-aos="fade-up"
         >
           {/* Additional Information Card */}
-          <Card>
+          <Card className="bg-black text-zinc-200">
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>
             </CardHeader>
@@ -195,7 +193,7 @@ export default function FilePage() {
               {loading ? (
                 <Skeleton className="w-full h-full" />
               ) : (
-                <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+                <div className="bg-black p-4 rounded-md border flex-grow overflow-y-auto h-full text-zinc-200">
                   {/* Additional content goes here */}
                 </div>
               )}
@@ -204,27 +202,25 @@ export default function FilePage() {
         </div>
       </main>
 
-      <footer className="py-4 bg-zinc-100">
-        <div className="container mx-auto px-4 text-center text-zinc-600 text-sm">
-          <p>&copy; 2024 TeachMe. All rights reserved.</p>
-        </div>
+      <footer className="py-4 bg-black text-zinc-600 text-center text-sm">
+        &copy; 2024 TeachMe. All rights reserved.
       </footer>
 
       <style jsx>{`
         @keyframes flash {
           0% {
-            opacity: 0; /* Fully transparent */
+            opacity: 0;
           }
           50% {
-            opacity: 1; /* Fully opaque */
+            opacity: 1;
           }
           100% {
-            opacity: 0; /* Back to fully transparent */
+            opacity: 0;
           }
         }
 
         .flashing-skeleton {
-          animation: flash 1s infinite; /* Flashing effect every second */
+          animation: flash 1s infinite;
         }
       `}</style>
     </div>

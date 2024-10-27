@@ -19,6 +19,7 @@ export default function Home() {
   const [imageUrl, setImageUrl] = useState('')
   const [fileName, setFileName] = useState('')
   const [fileError, setFileError] = useState('')
+  const [logoAnimated, setLogoAnimated] = useState(false)
 
   useEffect(() => {
     AOS.init({ duration: 1250 })
@@ -33,8 +34,10 @@ export default function Home() {
         try {
           const uniqueId = await uploadFileInfo(file)
           console.log("File uploaded successfully!")
-          router.push(`/${uniqueId}`)
-
+          // Trigger logo animation
+          setLogoAnimated(true)
+          // Redirect after animation
+          setTimeout(() => router.push(`/${uniqueId}`), 1500) // Adjust timing as needed
         } catch (error) {
           console.error("File upload failed:", error)
           setFileError('File upload failed. Please try again.')
@@ -47,14 +50,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gray-900 font-[family-name:var(--font-geist-sans)]">
-      <header className="text-center mb-20" data-aos="fade-down">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-black font-[family-name:var(--font-geist-sans)]">
+      <header className={`text-center mb-20 ${logoAnimated ? 'animate-logo-slide' : ''}`} data-aos="fade-down">
         <Image
           src="/TeachMe-logo.png"
           alt="TeachMe"
           width={300}
           height={80}
-          className="mx-auto mb-6"
+          className={`mx-auto mb-6 ${logoAnimated ? 'shrink-logo' : ''}`}
         />
         <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
           TeachMe is for when your professor doesn't upload the lectures.
@@ -77,7 +80,7 @@ export default function Home() {
                   <div className="space-y-4">
                     <Label htmlFor="file-upload" className="block">Upload PDF</Label>
                     <div className="flex items-center justify-center w-full">
-                      <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-zinc-50 hover:bg-zinc-100" data-aos="zoom-in">
+                      <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer hover:bg-black" data-aos="zoom-in">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                           <FileText className="w-10 h-10 mb-3 text-zinc-400" />
                           <p className="mb-2 text-sm text-zinc-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
@@ -112,6 +115,31 @@ export default function Home() {
           </Card>
         </div>
       </main>
+
+      {/* Add custom styles for animations */}
+      <style jsx>{`
+        @keyframes slide-up {
+          from {
+            transform: translateY(0);
+            width: 300px;
+            height: 80px;
+          }
+          to {
+            transform: translateY(-100px);
+            width: 150px;
+            height: 40px;
+          }
+        }
+
+        .animate-logo-slide {
+          animation: slide-up 1.5s forwards;
+        }
+
+        .shrink-logo {
+          width: 150px !important;
+          height: 40px !important;
+        }
+      `}</style>
     </div>
   )
 }
