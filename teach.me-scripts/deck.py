@@ -8,18 +8,48 @@ import re
 from tqdm import tqdm
 import gtts
 import requests
+import firebase_admin
+from firebase_admin import credentials, storage, db
+import time
+import uuid
+
 
 MODEL_NAME = "claude-3-opus-20240229"
+global_id_value = None
 
 
 class Deck:
-
-    def __init__(self, model, pdf_path):
+    def __init__(self, model, pdf_path, id_value=None):
+        global global_id_value
         self.client = anthropic.Anthropic()
         self.model = model
         self.pdf_path = pdf_path
         # self.path_name = pdf_path.split("/")[1]
         self.path_name = "lecture"
+        self.id_value = id_value
+        global_id_value = id_value
+
+        # if not firebase_admin._apps:
+        cred = credentials.Certificate("../teach.me-env/serviceAccountKey.json")
+        firebase_admin.initialize_app(
+            cred,
+            {
+                "databaseURL": "https://teachme-d2815-default-rtdb.firebaseio.com/",
+                "storageBucket": "teachme-d2815.appspot.com",
+            },
+        )
+        self.bucket = storage.bucket()
+        # self.bucket_name = "teachme-d2815.appspot.com"
+        # self.storage_client = storage.Client()
+        # self.bucket = self.storage_client.bucket(self.bucket_name)
+
+    def store_id(self):
+        if self.id_value:
+            # Logic to store the ID, e.g., save it to a database or log it
+            print(f"Storing ID: {self.id_value}")  # For demonstration
+            # You could also save it to Firebase or any other storage solution
+        else:
+            print("No ID provided to store.")
 
     def download_pdf(self):
         """Download PDF from URL and return as bytes"""
@@ -134,19 +164,47 @@ class Deck:
     # Playing the converted file
     # os.system("audio/lecture.mp3")
 
+    def upload_audio_to_firebase(self, audio_file_path):
+        # Use the global_id_value as the unique identifier
+        unique_id = global_id_value
+
+        # Define the blob for the audio file
+        audio_blob = self.bucket.blob(
+            f"audio/{unique_id}_{os.path.basename(audio_file_path)}"
+        )
+        audio_blob.upload_from_filename(audio_file_path)
+
+        audio_blob.make_public()
+        audio_url = audio_blob.public_url
+
+        # Get the public URL for the uploaded audio file
+        if not audio_url:
+            # Create the URL manually
+            token = audio_blob.metadata.get("firebaseStorageDownloadTokens", "")
+            audio_url = f"https://firebasestorage.googleapis.com/v0/b/{self.bucket.name}/o/{audio_blob.name}?alt=media&token={token}"
+            # Return the unique ID and audio URL
+
+        return unique_id, audio_url
+
+    def update_audio_metadata(self, audio_url):
+        # Use the global_id_value to update the metadata in Realtime Database
+        ref = db.reference(f"uploads/{global_id_value}")
+        ref.update(
+            {
+                "audioUrl": audio_url,  # Update with the audio URL
+                "updatedAt": str(int(time.time())),  # Optionally update the timestamp
+            }
+        )
+
+    # def run(self):
     def run(self):
+        print("------ Received Call from Server ------")
 
-        print("------ Recieved Call from Server ------")
-
-        # pdf_path = "pdfs/Lecture\\ 24\\ -\\ Oct\\ 23\\ -\\ Transport\\ Layer\\ III.pdf"  # This is the path to our slide deck.
-        # print(pdf_path_split)
+        # Convert PDF to base64 PNGs
         encoded_pngs = self.pdf_to_base64_pngs()
 
-        # Now let's pass the first 20 of these images (in order) to Claude at once and ask it a question about the deck. Why 20? Currently, the Anthropic API only allows you to pass in a maximum of 20 images. While this number will likely increase over time, we have some helpful tips for how to manage it later in this recipe.
         previous_slide_narratives = []
         f = open("transcripts/lecture_test.txt", "w")
-        # f.write("Now the file has more content!")
-        early_break = 0
 
         for i, encoded_png in tqdm(enumerate(encoded_pngs)):
             messages = [
@@ -187,14 +245,24 @@ class Deck:
             if early_break == 5:
                 break
 
-        slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
-        audio = self.transcript_to_video(
-            f"transcripts/lecture_test.txt", slide_narration
-        )
+        # Close the transcript file
         f.close()
-        self.transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
 
-        return True, audio
+        # Combine previous slide narrations into a single string for audio generation
+        slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
+
+        # Generate audio from the narration
+        audio_path = "audio/lecture.mp3"
+        self.transcript_to_video(audio_path, slide_narration)
+
+        # Upload audio to Firebase and get the unique ID and URL
+        unique_id, audio_url = self.upload_audio_to_firebase(audio_path)
+        print(f"Audio uploaded to Firebase: {audio_url}")
+
+        # Update audio metadata in Realtime Database
+        self.update_audio_metadata(audio_url)
+
+        return True, audio_url
 
 
 # print(get_completion(messages))

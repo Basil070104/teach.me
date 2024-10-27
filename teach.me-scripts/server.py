@@ -9,6 +9,8 @@ import time
 import itertools
 
 
+global_id_value = None
+
 app = Flask(__name__)
 CORS(app)
 
@@ -32,7 +34,8 @@ def get_transcript():
     data = request.get_json()
     # print(data["url"])
     path = data["url"]
-    obj = Deck(model=MODEL_NAME, pdf_path=path)
+    # id_value = data.get("id")
+    obj = Deck(model=MODEL_NAME, pdf_path=path, id_value=global_id_value)
 
     print("\n=== Started An Event ===")
     event = threading.Event()
@@ -40,6 +43,7 @@ def get_transcript():
 
     def transcription_fetch():
         try:
+            obj.store_id()
             success, audio = obj.run()
 
             # print("Here\n")
@@ -122,6 +126,21 @@ def get_reference():
 
     data = {"message": gem.response, "status": True}
     return jsonify(data)
+
+
+@app.route("/store_id", methods=["POST"])
+def store_id():
+    global global_id_value
+    data = request.get_json()
+    id_value = data.get("id")
+
+    if id_value:
+        # Here, you can implement the logic to store the id (e.g., save it to a database)
+        global_id_value = id_value
+        print(f"Received ID: {id_value}")  # For demonstration purposes
+        return jsonify({"status": True, "message": "ID stored successfully!"}), 200
+    else:
+        return jsonify({"status": False, "message": "No ID provided!"}), 400
 
 
 if __name__ == "__main__":

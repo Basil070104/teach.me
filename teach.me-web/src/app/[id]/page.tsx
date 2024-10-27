@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { database } from '../../firebase/firebaseConfig'
 import { ref, get } from 'firebase/database'
 import { useParams } from 'next/navigation'
@@ -18,9 +18,9 @@ import ParticleBackground from '@/components/ui/ParticleBackground'
 
 interface FileData {
   url: string
+  audioUrl: string
 }
 
-// API configuration
 const API_BASE_URL = 'http://127.0.0.1:5000/';
 
 export default function FilePage() {
@@ -29,7 +29,6 @@ export default function FilePage() {
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
-
   const [loadTran, setLoadTran] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState('');
@@ -38,6 +37,8 @@ export default function FilePage() {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   let temp = ''
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const startTranscription = async (data: any) => {
     setLoadTran(true);
@@ -52,15 +53,13 @@ export default function FilePage() {
         },
         body: JSON.stringify(data)
       })
-        .then(response => response.json())
-        .catch(error => console.error('Error fetching data:', error));
+      const json = await response.json();
 
       if (response.status == true) {
         setTranscript(response.message);
         temp = response.message
         setLoadTran(false);
-      }
-      else {
+      } else {
         throw new Error('Failed to get transcript');
       }
 
@@ -107,9 +106,20 @@ export default function FilePage() {
         const data = snapshot.val()
 
         if (data) {
-          setFileData(data)
+          setFileData(data);
+          try {
+            await fetch(`${API_BASE_URL}/store_id`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id })
+            });
+          } catch (error) {
+            console.error('Error storing ID:', error);
+          }
         } else {
-          console.error('No file found for this ID.')
+          console.error('No file found for this ID.');
         }
 
         await startTranscription(data)
@@ -125,14 +135,32 @@ export default function FilePage() {
       duration: 1250,
       easing: 'ease-in-out',
     });
-  }, [id])
+  }, [id]);
 
   const togglePlayPause = () => {
-    setIsPlaying(!isPlaying)
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(error => {
+          console.error('Error playing audio:', error);
+        });
+      }
+      setIsPlaying(!isPlaying);
+    }
   }
 
   const handleProgressChange = (newValue: number[]) => {
-    setProgress(newValue[0])
+    setProgress(newValue[0]);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newValue[0];
+    }
+  }
+
+  const updateProgress = () => {
+    if (audioRef.current) {
+      setProgress(audioRef.current.currentTime);
+    }
   }
 
   const handleChatToggle = () => {
@@ -166,10 +194,7 @@ export default function FilePage() {
       <main className="flex-grow container mx-auto px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Video Content Card */}
-          <Card
-            className="lg:col-span-1 bg-black text-zinc-200"
-            data-aos="fade-right"
-          >
+          <Card className="lg:col-span-1 bg-black text-zinc-200" data-aos="fade-right">
             <CardHeader className="pb-2">
               <CardTitle>Video Content</CardTitle>
             </CardHeader>
@@ -193,10 +218,7 @@ export default function FilePage() {
           </Card>
 
           {/* Transcript Card */}
-          <Card
-            className="lg:col-span-1 flex flex-col bg-black text-zinc-200"
-            data-aos="fade-left"
-          >
+          <Card className="lg:col-span-1 flex flex-col bg-black text-zinc-200" data-aos="fade-left">
             <CardHeader className="pb-2">
               <CardTitle>Transcript Generator</CardTitle>
             </CardHeader>
@@ -239,6 +261,14 @@ export default function FilePage() {
         </div>
 
         <div
+          <audio
+          ref={audioRef}
+          src="/lecture.mp3"
+          onTimeUpdate={updateProgress}
+          preload="auto"
+        />
+
+        <div
           className="lg:col-span-1 flex flex-col mt-4 h-60"
           data-aos="fade-up"
         >
@@ -264,35 +294,35 @@ export default function FilePage() {
         </div>
 
         <div className="fixed bottom-16 right-16">
-        {/* Chat Window */}
-        {isOpen && (
-          <Card 
-            className={`fixed bottom-[calc(64px+10px)] right-[16px] w-80 h-96 bg-black shadow-lg rounded-lg overflow-hidden z-[60] ${isFadingOut ? 'fade-out' : ''}`}
-            data-aos="fade-left"
-          >
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-zinc-200 font-semibold">Chat</h3>
-              <button
-                onClick={handleChatToggle}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="p-4 h-72 overflow-y-auto">
-              <p className="text-zinc-200">Chat content goes here...</p>
-            </div>
-          </Card>
-        )}
+          {/* Chat Window */}
+          {isOpen && (
+            <Card
+              className={`fixed bottom-[calc(64px+10px)] right-[16px] w-80 h-96 bg-black shadow-lg rounded-lg overflow-hidden z-[60] ${isFadingOut ? 'fade-out' : ''}`}
+              data-aos="fade-left"
+            >
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="text-zinc-200 font-semibold">Chat</h3>
+                <button
+                  onClick={handleChatToggle}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4 h-72 overflow-y-auto">
+                <p className="text-zinc-200">Chat content goes here...</p>
+              </div>
+            </Card>
+          )}
 
-        {/* Circle Button */}
-        <button
-          onClick={handleChatToggle}
-          className="fixed bottom-[16px] right-[16px] w-[40px] h-[40px] bg-black hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors z-[60]"
-        >
-          <MessageCircle size={24} />
-        </button>
-      </div>
+          {/* Circle Button */}
+          <button
+            onClick={handleChatToggle}
+            className="fixed bottom-[16px] right-[16px] w-[40px] h-[40px] bg-black hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors z-[60]"
+          >
+            <MessageCircle size={24} />
+          </button>
+        </div>
       </main>
 
       <footer className="py-4 bg-transparent text-zinc-600 text-center text-sm">
