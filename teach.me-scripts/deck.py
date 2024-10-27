@@ -14,16 +14,18 @@ import time
 import uuid
 
 MODEL_NAME = "claude-3-opus-20240229"
-
+global_id_value = None
 
 class Deck:
     def __init__(self, model, pdf_path, id_value=None):
+        global global_id_value
         self.client = anthropic.Anthropic()
         self.model = model
         self.pdf_path = pdf_path
         # self.path_name = pdf_path.split("/")[1]
         self.path_name = "lecture"
         self.id_value = id_value
+        global_id_value = id_value
 
         # if not firebase_admin._apps:
         cred = credentials.Certificate("../teach.me-env/serviceAccountKey.json")
@@ -159,30 +161,26 @@ class Deck:
     # os.system("audio/lecture.mp3")
 
     def upload_audio_to_firebase(self, audio_file_path):
-        # Generate a unique ID
-        unique_id = str(uuid.uuid4())  # or use str(int(time.time())) for a timestamp
+        # Use the global_id_value as the unique identifier
+        unique_id = global_id_value  
 
-        # Upload audio file with unique ID
+        # Define the blob for the audio file
         audio_blob = self.bucket.blob(f'audio/{unique_id}_{os.path.basename(audio_file_path)}')
         audio_blob.upload_from_filename(audio_file_path)
 
-        # Get the download URL
+        # Get the public URL for the uploaded audio file
         audio_url = audio_blob.public_url
         
-        # Save audio metadata to Realtime Database with the unique ID
-        audio_data = {
-            'name': os.path.basename(audio_file_path),
-            'url': audio_url,
-            'createdAt': str(int(time.time())),  # Timestamp as a string
-            'uniqueId': unique_id  # Store the unique ID
-        }
-        
-        # Use push to generate a unique key
-        ref = db.reference('audio_uploads')
-        ref.child(unique_id).set(audio_data)  # Store under the unique ID
+        # Return the unique ID and audio URL
+        return unique_id, audio_url
 
-        return audio_url
-
+    def update_audio_metadata(self, audio_url):
+        # Use the global_id_value to update the metadata in Realtime Database
+        ref = db.reference(f'uploads/{global_id_value}')
+        ref.update({
+            'audioUrl': audio_url,  # Update with the audio URL
+            'updatedAt': str(int(time.time())),  # Optionally update the timestamp
+        })
 
     # def run(self):
     def run(self):
@@ -236,11 +234,14 @@ class Deck:
         audio_path = "audio/lecture.mp3"
         self.transcript_to_video(audio_path, slide_narration)
 
-        # Upload audio to Firebase
-        audio_url = self.upload_audio_to_firebase(audio_path)
+        # Upload audio to Firebase and get the unique ID and URL
+        unique_id, audio_url = self.upload_audio_to_firebase(audio_path)
         print(f"Audio uploaded to Firebase: {audio_url}")
 
-        return True, audio_url  # Indent this line to be part of the run method
+        # Update audio metadata in Realtime Database
+        self.update_audio_metadata(audio_url)
+
+        return True, audio_url 
 
     
 
