@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, SkipBack, SkipForward } from "lucide-react"
+import { Loader2 } from 'lucide-react'
 
 interface FileData {
   url: string
@@ -202,7 +203,7 @@ export default function FilePage() {
           </Card>
         </div>
         <div >
-          <Card className="lg:col-span-1 flex flex-col mt-4 h-fit min-h-60">
+          <Card className="lg:col-span-1 flex flex-col mt-4 h-fit min-h-64">
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>
             </CardHeader>
@@ -212,7 +213,7 @@ export default function FilePage() {
               ) : (
                 <>
 
-                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
                     {
                       refer
                     }

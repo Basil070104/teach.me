@@ -31,7 +31,7 @@ class Gem:
                 {
                     "role": "user",
                     "parts": [
-                        "give more information on a topic by linking urls based on some information and don't use markdown please just plain text",
+                        "give more information on a topic by linking urls based on some information and don't use markdown please just plain text with no markdown",
                     ],
                 },
                 {
