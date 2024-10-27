@@ -12,10 +12,49 @@ interface FileData {
   url: string
 }
 
+// API configuration
+const API_BASE_URL = 'http://127.0.0.1:5000/';
+
 export default function FilePage() {
   const { id } = useParams()
   const [fileData, setFileData] = useState<FileData | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const [loadTran, setLoadTran] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [error, setError] = useState('');
+
+  const startTranscription = async (data: any) => {
+    setLoadTran(true);
+    setError('');
+    setTranscript('');
+    try {
+      const send = { pdf: data };
+      const response = await fetch(`${API_BASE_URL}/get_transcript`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching data:', error));
+
+      if (response.status == true) {
+        setTranscript(response.message);
+        setLoadTran(false);
+      }
+      else {
+        throw new Error('Failed to get transcript');
+      }
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      setLoadTran(false);
+    }
+
+
+  };
 
   useEffect(() => {
     const fetchFileData = async () => {
@@ -29,11 +68,13 @@ export default function FilePage() {
         } else {
           console.error('No file found for this ID.')
         }
+        startTranscription(data)
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     fetchFileData()
+
   }, [id])
 
   if (loading) {
@@ -56,10 +97,10 @@ export default function FilePage() {
           <AspectRatio ratio={16 / 9}>
             <video
               src="/path/to/your-video.mp4"
-              controls 
-              autoPlay 
-              loop 
-              muted 
+              controls
+              autoPlay
+              loop
+              muted
               className="rounded-md object-cover w-full h-full"
             >
               Your browser does not support the video tag.
@@ -74,7 +115,7 @@ export default function FilePage() {
               className="w-full h-[600px] border-none"
               title="PDF Viewer"
             >
-              This browser does not support PDFs. Please download the PDF to view it: 
+              This browser does not support PDFs. Please download the PDF to view it:
               <a href={fileData.url}>Download PDF</a>
             </iframe>
           ) : (
@@ -82,7 +123,29 @@ export default function FilePage() {
           )}
         </section>
 
-        <TranscriptGenerator />
+        <div>
+          {/* <TranscriptGenerator /> */}
+          {error && (
+            <div>
+              Alert Failed to Fetch Transcript
+            </div>
+          )}
+
+          {transcript && (
+            <div>
+              <h3 className="text-lg font-semibold mb-2 text-white">Generated Transcript:</h3>
+              <div className="mt-4 w-full h-72 bg-white text-black 
+          border border-white/30
+          shadow-[0_0_15px_rgba(255,255,255,0.1)]
+          placeholder-gray-400 resize-none rounded-sm overflow-y-auto">
+
+                <div className="bg-muted p-4 rounded-lg whitespace-pre-wrap relative text-left">
+                  {transcript}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
 
       <footer>

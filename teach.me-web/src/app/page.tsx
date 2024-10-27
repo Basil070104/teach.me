@@ -29,6 +29,7 @@ export default function Home() {
           const uniqueId = await uploadFileInfo(file)
           console.log("File uploaded successfully!")
           router.push(`/${uniqueId}`)
+
         } catch (error) {
           console.error("File upload failed:", error)
           setFileError('File upload failed. Please try again.')

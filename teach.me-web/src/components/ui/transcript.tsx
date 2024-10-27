@@ -17,26 +17,10 @@ const TranscriptGenerator = () => {
     setError('');
     setTranscript('');
 
-    // useEffect(() => {
-    //   fetch(`${API_BASE_URL}/get_transcript`)
-    //     .then(response => response.json())
-    //     .then(data => setData(data))
-    //     .catch(error => console.error('Error fetching data:', error));
-    // }, []);
-
     try {
       const response = await fetch(`${API_BASE_URL}/get_transcript`)
         .then(response => response.json())
         .catch(error => console.error('Error fetching data:', error));
-
-      // if (!response.ok) {
-      //   throw new Error('Failed to start transcription');
-      // }
-
-      // Start polling for transcript status
-      // pollInterval.current = setInterval(checkTranscriptStatus, 2000); // Poll every 2 seconds
-
-      // console.log("data: ", response.message);
 
       if (response.status == true) {
         setTranscript(response.message);
