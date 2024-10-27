@@ -11,3 +11,7 @@ body {
     --radius: 0.5rem;
   }
 }
+
+.redBoxShadow {
+  box-shadow: 0em 0 20em rgb(0, 42, 100);
+}
