@@ -15,7 +15,7 @@ export function InputFile({ width = "100%", height = "300px", onChange }: InputF
   };
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
+    <div className="grid w-full max-w-sm items-center gap-1.5 bg-black p-2 rounded-md">
       <Input
         id="picture"
         type="file"
