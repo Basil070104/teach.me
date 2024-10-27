@@ -16,12 +16,51 @@ interface FileData {
   url: string
 }
 
+// API configuration
+const API_BASE_URL = 'http://127.0.0.1:5000/';
+
 export default function FilePage() {
   const { id } = useParams()
   const [fileData, setFileData] = useState<FileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
+
+  const [loadTran, setLoadTran] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [error, setError] = useState('');
+
+  const startTranscription = async (data: any) => {
+    setLoadTran(true);
+    setError('');
+    setTranscript('');
+    try {
+      const send = { pdf: data };
+      const response = await fetch(`${API_BASE_URL}/get_transcript`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching data:', error));
+
+      if (response.status == true) {
+        setTranscript(response.message);
+        setLoadTran(false);
+      }
+      else {
+        throw new Error('Failed to get transcript');
+      }
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      setLoadTran(false);
+    }
+
+
+  };
 
   useEffect(() => {
     const fetchFileData = async () => {
@@ -35,11 +74,13 @@ export default function FilePage() {
         } else {
           console.error('No file found for this ID.')
         }
+        startTranscription(data)
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     fetchFileData()
+
   }, [id])
 
   const togglePlayPause = () => {
@@ -79,7 +120,7 @@ export default function FilePage() {
                 <AspectRatio ratio={16 / 9}>
                   <video
                     src={fileData?.url || "/path/to/your-video.mp4"}
-                    controls 
+                    controls
                     className="rounded-md object-cover w-full h-full"
                   >
                     Your browser does not support the video tag.
@@ -117,6 +158,28 @@ export default function FilePage() {
                     {/* <p className="text-zinc-600">
                       Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
                     </p> */}
+                    {
+                      transcript
+                    }
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        <div >
+          <Card className="lg:col-span-1 flex flex-col mt-4 h-60">
+            <CardHeader className="pb-2">
+              <CardTitle>Extra Information for Guidance</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow flex flex-col">
+              {loading ? (
+                <Skeleton className="w-full h-full" />
+              ) : (
+                <>
+
+                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+
                   </div>
                 </>
               )}

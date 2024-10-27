@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from deck import Deck
+from gem import Gem
 import threading
 import sys
 import time
@@ -24,11 +25,13 @@ def hello():
     return f"Hello, {name}!"
 
 
-@app.route("/get_transcript", methods=["GET"])
+@app.route("/get_transcript", methods=["POST"])
 def get_transcript():
     MODEL_NAME = "claude-3-opus-20240229"
-    path = "pdfs/lecture_test.pdf"
-    obj = Deck(model=MODEL_NAME, pdf_path="pdfs/lecture_test.pdf")
+    data = request.get_json()
+    # print(data["url"])
+    path = data["url"]
+    obj = Deck(model=MODEL_NAME, pdf_path=path)
 
     print("\n=== Started An Event ===")
     event = threading.Event()
@@ -36,7 +39,7 @@ def get_transcript():
 
     def transcription_fetch():
         try:
-            obj.run()
+            success, audio = obj.run()
             # print("Here\n")
             # pass
         finally:

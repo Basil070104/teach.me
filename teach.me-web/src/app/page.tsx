@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { Tabs, TabsContent, Loader2 } from "@/components/ui/tabs"
 import { AlertCircle, FileText } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import AOS from 'aos';
@@ -35,6 +35,7 @@ export default function Home() {
           const uniqueId = await uploadFileInfo(file)
           console.log("File uploaded successfully!")
           router.push(`/${uniqueId}`)
+
         } catch (error) {
           console.error("File upload failed:", error)
           setFileError('File upload failed. Please try again.')
@@ -60,7 +61,6 @@ export default function Home() {
           TeachMe is for when your professor doesn't upload the lectures.
         </p>
       </header>
-      
       <main className="w-full max-w-md" data-aos="fade-up">
         <Card>
           <CardHeader>
@@ -78,10 +78,10 @@ export default function Home() {
                         <p className="mb-2 text-sm text-zinc-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                         <p className="text-xs text-zinc-500">PDF files only (MAX. 10MB)</p>
                       </div>
-                      <Input 
-                        id="file-upload" 
-                        type="file" 
-                        className="hidden" 
+                      <Input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
                         onChange={handleFileUpload}
                         accept=".pdf"
                       />
