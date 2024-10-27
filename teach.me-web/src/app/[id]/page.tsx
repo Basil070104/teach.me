@@ -157,7 +157,7 @@ export default function FilePage() {
   return (
     <div className="min-h-screen flex flex-col font-[family-name:var(--font-geist-sans)]">
       {/* <ParticleBackground /> */}
-      <header className="py-4 bg-black shadow-sm">
+      <header className="py-4 shadow-sm bg-transparent">
         <div className="container mx-auto px-4">
           <Image
             src="/TeachMe-logo.png"
@@ -302,7 +302,7 @@ export default function FilePage() {
       </div>
       </main>
 
-      <footer className="py-4 bg-black text-zinc-600 text-center text-sm">
+      <footer className="py-4 bg-transparent text-zinc-600 text-center text-sm">
         &copy; 2024 TeachMe. All rights reserved.
       </footer>
 
