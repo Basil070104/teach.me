@@ -10,7 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-import { Play, Pause, SkipBack, SkipForward } from "lucide-react"
+import { Play, Pause } from "lucide-react"
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 interface FileData {
   url: string
@@ -58,8 +60,6 @@ export default function FilePage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setLoadTran(false);
     }
-
-
   };
 
   useEffect(() => {
@@ -81,6 +81,11 @@ export default function FilePage() {
 
     fetchFileData()
 
+    // Initialize AOS animations
+    AOS.init({
+      duration: 1000, // animation duration
+      easing: 'ease-in-out', // animation easing
+    });
   }, [id])
 
   const togglePlayPause = () => {
@@ -109,7 +114,10 @@ export default function FilePage() {
 
       <main className="flex-grow container mx-auto px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="lg:col-span-1">
+          <Card
+            className="lg:col-span-1"
+            data-aos="fade-right"  // Slide the video player in from the left
+          >
             <CardHeader className="pb-2">
               <CardTitle>Video Content</CardTitle>
             </CardHeader>
@@ -130,45 +138,53 @@ export default function FilePage() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-1 flex flex-col">
+          <Card
+            className="lg:col-span-1 flex flex-col"
+            data-aos="fade-left"  // Slide the transcript card in from the right
+          >
             <CardHeader className="pb-2">
               <CardTitle>Transcript Generator</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col">
-              {loading ? (
-                <Skeleton className="w-full h-full" />
-              ) : (
-                <>
-                  <div className="bg-zinc-100 p-3 rounded-md mb-4 flex items-center space-x-2">
-                    <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1">
-                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                    </Button>
-                    <Slider
-                      value={[progress]}
-                      max={100}
-                      step={1}
-                      onValueChange={handleProgressChange}
-                      className="flex-grow"
-                    />
-                    <div className="text-xs text-zinc-500 w-16 text-right">
-                      {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
-                    </div>
+              <div className="bg-zinc-100 p-3 rounded-md mb-4 flex items-center space-x-2">
+                <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1">
+                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                </Button>
+                <Slider
+                  value={[progress]}
+                  max={600}  // Set the max to 10 minutes (600 seconds)
+                  step={1}
+                  onValueChange={handleProgressChange}
+                  className="flex-grow"
+                />
+                <div className="text-xs text-zinc-500 w-16 text-right">
+                  {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+                {loadTran ? (
+                  <div className="flex flex-col space-y-2">
+                    {/* Applying the flashing animation to Skeleton components */}
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
+                    <Skeleton className="h-4 w-full flashing-skeleton" />
                   </div>
-                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
-                    {/* <p className="text-zinc-600">
-                      Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
-                    </p> */}
-                    {
-                      transcript
-                    }
-                  </div>
-                </>
-              )}
+                ) : (
+                  transcript || "No transcript available."
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
-        <div >
-          <Card className="lg:col-span-1 flex flex-col mt-4 h-60">
+        
+        <div 
+          className="lg:col-span-1 flex flex-col mt-4 h-60"
+          data-aos="fade-up"  // Slide up the extra information from the bottom
+        >
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>
             </CardHeader>
@@ -176,12 +192,9 @@ export default function FilePage() {
               {loading ? (
                 <Skeleton className="w-full h-full" />
               ) : (
-                <>
-
-                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
-
-                  </div>
-                </>
+                <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+                  {/* Additional content goes here */}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -193,6 +206,24 @@ export default function FilePage() {
           <p>&copy; 2024 TeachMe. All rights reserved.</p>
         </div>
       </footer>
+
+      <style jsx>{`
+        @keyframes flash {
+          0% {
+            opacity: 0; /* Fully transparent */
+          }
+          50% {
+            opacity: 1; /* Fully opaque */
+          }
+          100% {
+            opacity: 0; /* Back to fully transparent */
+          }
+        }
+
+        .flashing-skeleton {
+          animation: flash 1s infinite; /* Flashing effect every second */
+        }
+      `}</style>
     </div>
   )
 }

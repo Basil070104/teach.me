@@ -1,5 +1,4 @@
 
-This lab covers distributed routing protocols. You'll implement network routing and forwarding using routing tables. Routers forward data packets between source and destination nodes. You'll also do the Honors milestone, extending the Link State routing protocol. The source code will run in a simulated network environment.
+This exercise involves writing a Python program for software sales discounts. Based on the quantity purchased, discounts range from 10% to 42%. The program should prompt for the quantity, calculate and display the discount amount and total purchase price, formatted to match the provided sample output.
 
-This slide explains how to run the Python code for the lab. Use the provided JSON configuration files to specify the simulated network setup. Run the Distance Vector routing with "python3 network.py 01.json DV" and run the Link State routing for Honors milestone with "python3 network.py 01.json LS".
- submitting.
+This slide shows the expected output for the software sales program. It demonstrates handling three different purchase quantities, calculating the appropriate discount percentage for each, and displaying the discounted total price. Use this as a guide when testing your program to ensure it produces the correct results.
