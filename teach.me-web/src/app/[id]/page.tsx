@@ -15,6 +15,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { MessageCircle, X } from 'lucide-react'
 import ParticleBackground from '@/components/ui/ParticleBackground'
+import { useRouter } from 'next/navigation';
 
 interface FileData {
   url: string
@@ -36,6 +37,7 @@ export default function FilePage() {
   const [refer, setRefer] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const router = useRouter();
 
   let temp = ''
 
@@ -148,6 +150,10 @@ export default function FilePage() {
     }
   };
 
+  const handleLogoClick = () => {
+    router.push('/'); // Redirect to the home page
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-[family-name:var(--font-geist-sans)]">
       {/* <ParticleBackground /> */}
@@ -158,7 +164,8 @@ export default function FilePage() {
             alt="TeachMe"
             width={150}
             height={40}
-            className="mx-auto"
+            className="mx-auto cursor-pointer" // Add cursor-pointer for visual feedback
+            onClick={handleLogoClick} // Add onClick event
           />
         </div>
       </header>
