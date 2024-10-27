@@ -16,7 +16,6 @@ interface FileData {
   url: string
 }
 
-// API configuration
 const API_BASE_URL = 'http://127.0.0.1:5000/';
 
 export default function FilePage() {
@@ -58,8 +57,6 @@ export default function FilePage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setLoadTran(false);
     }
-
-
   };
 
   useEffect(() => {

@@ -8,18 +8,34 @@ import re
 from tqdm import tqdm
 import gtts
 import requests
+import firebase_admin
+from firebase_admin import credentials, storage, db
+import time
+import uuid
 
 MODEL_NAME = "claude-3-opus-20240229"
 
 
 class Deck:
-
     def __init__(self, model, pdf_path):
         self.client = anthropic.Anthropic()
         self.model = model
         self.pdf_path = pdf_path
         # self.path_name = pdf_path.split("/")[1]
         self.path_name = "lecture"
+
+        # if not firebase_admin._apps:
+        cred = credentials.Certificate("../teach.me-env/serviceAccountKey.json")
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://teachme-d2815-default-rtdb.firebaseio.com/',
+            'storageBucket': 'teachme-d2815.appspot.com'
+            })
+        self.bucket = storage.bucket()
+        # self.bucket_name = "teachme-d2815.appspot.com"
+        # self.storage_client = storage.Client()
+        # self.bucket = self.storage_client.bucket(self.bucket_name)
+        
+
 
     def download_pdf(self):
         """Download PDF from URL and return as bytes"""
@@ -134,19 +150,41 @@ class Deck:
     # Playing the converted file
     # os.system("audio/lecture.mp3")
 
+    def upload_audio_to_firebase(self, audio_file_path):
+        # Generate a unique ID
+        unique_id = str(uuid.uuid4())  # or use str(int(time.time())) for a timestamp
+
+        # Upload audio file with unique ID
+        audio_blob = self.bucket.blob(f'audio/{unique_id}_{os.path.basename(audio_file_path)}')
+        audio_blob.upload_from_filename(audio_file_path)
+
+        # Get the download URL
+        audio_url = audio_blob.public_url
+        
+        # Save audio metadata to Realtime Database with the unique ID
+        audio_data = {
+            'name': os.path.basename(audio_file_path),
+            'url': audio_url,
+            'createdAt': str(int(time.time())),  # Timestamp as a string
+            'uniqueId': unique_id  # Store the unique ID
+        }
+        
+        # Use push to generate a unique key
+        ref = db.reference('audio_uploads')
+        ref.child(unique_id).set(audio_data)  # Store under the unique ID
+
+        return audio_url
+
+
+    # def run(self):
     def run(self):
+        print("------ Received Call from Server ------")
 
-        print("------ Recieved Call from Server ------")
-
-        # pdf_path = "pdfs/Lecture\\ 24\\ -\\ Oct\\ 23\\ -\\ Transport\\ Layer\\ III.pdf"  # This is the path to our slide deck.
-        # print(pdf_path_split)
+        # Convert PDF to base64 PNGs
         encoded_pngs = self.pdf_to_base64_pngs()
 
-        # Now let's pass the first 20 of these images (in order) to Claude at once and ask it a question about the deck. Why 20? Currently, the Anthropic API only allows you to pass in a maximum of 20 images. While this number will likely increase over time, we have some helpful tips for how to manage it later in this recipe.
         previous_slide_narratives = []
         f = open("transcripts/lecture_test.txt", "w")
-        # f.write("Now the file has more content!")
-        early_break = 0
 
         for i, encoded_png in tqdm(enumerate(encoded_pngs)):
             messages = [
@@ -163,9 +201,7 @@ class Deck:
                         },
                         {
                             "type": "text",
-                            "text": self.build_slides_narration_prompt(
-                                previous_slide_narratives
-                            ),
+                            "text": self.build_slides_narration_prompt(previous_slide_narratives),
                         },
                     ],
                 }
@@ -181,20 +217,24 @@ class Deck:
 
             previous_slide_narratives.append(narration)
             f.write(narration)
-            # If you want to see the narration we produced, uncomment the below line
-            # print(narration)
-            early_break += 1
-            if early_break == 2:
-                break
 
-        slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
-        audio = self.transcript_to_video(
-            f"transcripts/lecture_test.txt", slide_narration
-        )
+        # Close the transcript file
         f.close()
-        self.transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
 
-        return True, audio
+        # Combine previous slide narrations into a single string for audio generation
+        slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)
+
+        # Generate audio from the narration
+        audio_path = "audio/lecture.mp3"
+        self.transcript_to_video(audio_path, slide_narration)
+
+        # Upload audio to Firebase
+        audio_url = self.upload_audio_to_firebase(audio_path)
+        print(f"Audio uploaded to Firebase: {audio_url}")
+
+        return True, audio_url  # Indent this line to be part of the run method
+
+    
 
 
 # print(get_completion(messages))

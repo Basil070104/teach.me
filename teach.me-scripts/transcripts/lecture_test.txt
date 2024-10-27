@@ -1,4 +1,2 @@
 
-This lab covers distributed routing protocols. You'll implement network routing and forwarding using routing tables you create. Routers and clients never fail, and you can assume no packet drops, but link status and cost can change dynamically. Your solution must be resilient to such network changes.
-
-To implement the routing protocols, you'll need to understand the network configuration file format and Python code structure. The json file specifies the network topology and link costs. Use the provided Python code templates to implement distance vector routing and link state routing, and test your code thoroughly before submitting.
+This resume belongs to Yuwen (Ellie) Ding, a computer science graduate with a Bachelor's degree from the University of North Carolina at Chapel Hill. She has experience in computer support, news aggregation, game development, and volunteering. Her technical skills include various programming languages, tools, and libraries. She shows promise as a well-rounded computer science professional.

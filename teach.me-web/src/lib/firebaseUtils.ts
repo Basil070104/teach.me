@@ -17,7 +17,8 @@ export const uploadFileInfo = async (file) => {
     size: file.size,
     type: file.type,
     createdAt: new Date().toISOString(),
-    uniqueId: uniqueId, // Store the unique ID in the database for reference
+    uniqueId: uniqueId,
+    storageUrl: downloadURL,
   });
 
   return fileId; 
