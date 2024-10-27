@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Play, Pause } from "lucide-react"
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { MessageCircle, X } from 'lucide-react'
 
 interface FileData {
   url: string
@@ -31,6 +32,10 @@ export default function FilePage() {
   const [loadTran, setLoadTran] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState('');
+  const [refer, setRefer] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  let temp = ''
 
   const startTranscription = async (data: any) => {
     setLoadTran(true);
@@ -38,7 +43,7 @@ export default function FilePage() {
     setTranscript('');
     try {
       const send = { pdf: data };
-      const response = await fetch(`${API_BASE_URL}/get_transcript`, {
+      const response = await fetch(`${API_BASE_URL}get_transcript`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,6 +55,7 @@ export default function FilePage() {
 
       if (response.status == true) {
         setTranscript(response.message);
+        temp = response.message
         setLoadTran(false);
       }
       else {
@@ -60,6 +66,35 @@ export default function FilePage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setLoadTran(false);
     }
+  };
+
+  const getRef = async () => {
+    setRefer('');
+    console.log(temp);
+    const data = { "text": temp }
+    try {
+      const response = await fetch(`${API_BASE_URL}get_references`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching data:', error));
+
+      if (response.status == true) {
+        setRefer(response.message);
+      }
+      else {
+        throw new Error('Failed to get transcript');
+      }
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+
+
   };
 
   useEffect(() => {
@@ -74,7 +109,8 @@ export default function FilePage() {
         } else {
           console.error('No file found for this ID.')
         }
-        startTranscription(data)
+        await startTranscription(data)
+        await getRef()
         setLoading(false)
       }
     }
@@ -180,7 +216,7 @@ export default function FilePage() {
           </Card>
         </div>
 
-        <div 
+        <div
           className="lg:col-span-1 flex flex-col mt-4 h-60"
           data-aos="fade-up"
         >
@@ -193,12 +229,45 @@ export default function FilePage() {
               {loading ? (
                 <Skeleton className="w-full h-full" />
               ) : (
-                <div className="bg-black p-4 rounded-md border flex-grow overflow-y-auto h-full text-zinc-200">
-                  {/* Additional content goes here */}
-                </div>
+                <>
+
+                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+                    {
+                      refer
+                    }
+                  </textarea>
+                </>
               )}
             </CardContent>
           </Card>
+        </div>
+
+        <div className="fixed bottom-16 right-16">
+          {/* Chat Window */}
+          {isOpen && (
+            <Card className="absolute bottom-16 right-0 w-80 h-96 bg-white shadow-lg rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="font-semibold">Chat</h3>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4 h-72 overflow-y-auto">
+                <p className="text-gray-600">Chat content goes here...</p>
+              </div>
+            </Card>
+          )}
+
+          {/* Circle Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-12 h-12 bg-slate-900 hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors"
+          >
+            <MessageCircle size={24} />
+          </button>
         </div>
       </main>
 
