@@ -13,6 +13,7 @@ from firebase_admin import credentials, storage, db
 import time
 import uuid
 
+
 MODEL_NAME = "claude-3-opus-20240229"
 global_id_value = None
 
@@ -168,10 +169,16 @@ class Deck:
         audio_blob = self.bucket.blob(f'audio/{unique_id}_{os.path.basename(audio_file_path)}')
         audio_blob.upload_from_filename(audio_file_path)
 
-        # Get the public URL for the uploaded audio file
+        audio_blob.make_public()
         audio_url = audio_blob.public_url
+
+        # Get the public URL for the uploaded audio file
+        if not audio_url:
+                # Create the URL manually
+                token = audio_blob.metadata.get('firebaseStorageDownloadTokens', '')
+                audio_url = f"https://firebasestorage.googleapis.com/v0/b/{self.bucket.name}/o/{audio_blob.name}?alt=media&token={token}"        
+                # Return the unique ID and audio URL
         
-        # Return the unique ID and audio URL
         return unique_id, audio_url
 
     def update_audio_metadata(self, audio_url):

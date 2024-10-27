@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { database } from '../../firebase/firebaseConfig'
 import { ref, get } from 'firebase/database'
 import { useParams } from 'next/navigation'
@@ -16,6 +16,7 @@ import 'aos/dist/aos.css';
 
 interface FileData {
   url: string
+  audioUrl: string
 }
 
 const API_BASE_URL = 'http://127.0.0.1:5000/';
@@ -26,17 +27,17 @@ export default function FilePage() {
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
-
   const [loadTran, setLoadTran] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState('');
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const startTranscription = async (data: any) => {
     setLoadTran(true);
     setError('');
     setTranscript('');
     try {
-      const send = { pdf: data };
       const response = await fetch(`${API_BASE_URL}/get_transcript`, {
         method: 'POST',
         headers: {
@@ -44,14 +45,12 @@ export default function FilePage() {
         },
         body: JSON.stringify(data)
       })
-        .then(response => response.json())
-        .catch(error => console.error('Error fetching data:', error));
+      const json = await response.json();
 
-      if (response.status == true) {
-        setTranscript(response.message);
+      if (json.status) {
+        setTranscript(json.message);
         setLoadTran(false);
-      }
-      else {
+      } else {
         throw new Error('Failed to get transcript');
       }
 
@@ -67,18 +66,16 @@ export default function FilePage() {
         const fileRef = ref(database, `uploads/${id}`)
         const snapshot = await get(fileRef)
         const data = snapshot.val()
-  
+
         if (data) {
           setFileData(data);
-          
-          // Send the ID to the server
           try {
             await fetch(`${API_BASE_URL}/store_id`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ id })  // Send the ID
+              body: JSON.stringify({ id })
             });
           } catch (error) {
             console.error('Error storing ID:', error);
@@ -98,14 +95,32 @@ export default function FilePage() {
       duration: 1250,
       easing: 'ease-in-out',
     });
-  }, [id])
+  }, [id]);
 
   const togglePlayPause = () => {
-    setIsPlaying(!isPlaying)
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(error => {
+          console.error('Error playing audio:', error);
+        });
+      }
+      setIsPlaying(!isPlaying);
+    }
   }
 
   const handleProgressChange = (newValue: number[]) => {
-    setProgress(newValue[0])
+    setProgress(newValue[0]);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newValue[0];
+    }
+  }
+
+  const updateProgress = () => {
+    if (audioRef.current) {
+      setProgress(audioRef.current.currentTime);
+    }
   }
 
   return (
@@ -125,10 +140,7 @@ export default function FilePage() {
       <main className="flex-grow container mx-auto px-4 py-6">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Video Content Card */}
-          <Card
-            className="lg:col-span-1 bg-black text-zinc-200"
-            data-aos="fade-right"
-          >
+          <Card className="lg:col-span-1 bg-black text-zinc-200" data-aos="fade-right">
             <CardHeader className="pb-2">
               <CardTitle>Video Content</CardTitle>
             </CardHeader>
@@ -150,10 +162,7 @@ export default function FilePage() {
           </Card>
 
           {/* Transcript Card */}
-          <Card
-            className="lg:col-span-1 flex flex-col bg-black text-zinc-200"
-            data-aos="fade-left"
-          >
+          <Card className="lg:col-span-1 flex flex-col bg-black text-zinc-200" data-aos="fade-left">
             <CardHeader className="pb-2">
               <CardTitle>Transcript Generator</CardTitle>
             </CardHeader>
@@ -176,7 +185,6 @@ export default function FilePage() {
               <div className="bg-black p-4 rounded-md border flex-grow overflow-y-auto text-zinc-200">
                 {loadTran ? (
                   <div className="flex flex-col space-y-2">
-                    {/* Applying the flashing animation to Skeleton components */}
                     <Skeleton className="h-4 w-full flashing-skeleton" />
                     <Skeleton className="h-4 w-full flashing-skeleton" />
                     <Skeleton className="h-4 w-full flashing-skeleton" />
@@ -191,6 +199,13 @@ export default function FilePage() {
             </CardContent>
           </Card>
         </div>
+
+        <audio
+          ref={audioRef}
+          src="/lecture.mp3"
+          onTimeUpdate={updateProgress}
+          preload="auto"
+        />
 
         <div 
           className="lg:col-span-1 flex flex-col mt-4 h-60"

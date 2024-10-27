@@ -18,7 +18,7 @@ export const uploadFileInfo = async (file) => {
     type: file.type,
     createdAt: new Date().toISOString(),
     uniqueId: uniqueId,
-    audioUrl: downloadURL,
+    audioUrl: null,
   });
 
   return fileId; 
