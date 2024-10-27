@@ -112,7 +112,7 @@ export default function Home() {
                 </TabsContent>
               </Tabs>
             </CardContent>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="flex justify-center bg-transparent">
               <p className="text-sm text-zinc-500" data-aos="fade-in">TeachMe 2024 - Empowering Education</p>
             </CardFooter>
           </Card>
