@@ -220,7 +220,7 @@ export default function FilePage() {
 
                   <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
                     {
-                      { refer }
+                      refer
                     }
                   </textarea>
                 </>
