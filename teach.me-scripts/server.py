@@ -82,8 +82,8 @@ def get_transcript():
 @app.route("/get_references", methods=["POST"])
 def get_reference():
     data = request.get_json()
-    print(data)
-    print(f"Result type: {type(data)}")
+    # print(data)
+    # print(f"Result type: {type(data)}")
     gem = Gem(data)
 
     print("\n=== Started An Event ===")

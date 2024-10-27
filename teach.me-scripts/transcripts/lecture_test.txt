@@ -1,15 +1,10 @@
 
-Welcome to ECE 46300, Transport Layer III, for Fall 2024. In this course, we will explore the intricacies of the transport layer in computer networks. I'm your instructor, Vishal Shrivastav, and I look forward to guiding you through this fascinating topic as we delve into the core concepts and protocols.
+Welcome to ECE 46300, Transport Layer IV. I'm Professor Vishal Shrivastav, and this fall semester, we'll dive into the intricacies of the transport layer in computer networks. This layer plays a crucial role in ensuring reliable, efficient data transport between hosts. Let's begin our exploration of this fascinating topic.
 
-TCP provides reliable, in-order delivery to applications through features like application multiplexing, ACKs and retransmissions, flow control, and congestion control. TCP uses byte stream abstraction, communicating with applications using a byte stream rather than packets. TCP is connection-oriented, establishing a pairwise sender-receiver connection before sending data.
+TCP provides reliable, in-order delivery to applications through features like application multiplexing, ACKs and retransmissions, flow control, and congestion control. It uses byte stream abstraction, communicating with a byte stream rather than packets. TCP is connection-oriented, establishing a pairwise sender-receiver connection before sending data.
 
-TCP provides reliable, in-order delivery through:
-- Application multiplexing
-- ACKs and retransmissions for reliability
-- Flow and congestion control
-It uses byte stream abstraction, communicating with a byte stream, not packets.
-TCP is connection-oriented, establishing a connection between sender and receiver to maintain connection-specific state before sending data.
+TCP maintains connection-specific state like sequence numbers and window sizes to provide reliable, in-order delivery. The sender and receiver establish a connection before data transmission. This connection-oriented approach, combined with byte stream abstraction, allows TCP to deliver data to applications as an ordered stream of bytes.
 
-ACKs, or acknowledgements, are crucial for TCP's reliability. The receiver sends ACKs to confirm data received, allowing the sender to know what has arrived successfully and what needs to be retransmitted. ACKs provide feedback to ensure all data is delivered reliably, in the correct order, to the application.
+A TCP connection is uniquely identified by a 5-tuple of source and destination IPs, ports, and protocol. The connection setup exchanges an initial sequence number (ISN), used to mark the start of the byte stream. Each endpoint randomly chooses its ISN to avoid overlap between connections.
 
-The sequence and acknowledgement numbers in the TCP header are both 32 bits long. The sequence number identifies the byte number of the first byte of data, while the acknowledgement number confirms the last byte successfully received, requesting the next expected byte. These fields enable reliable, in-order data delivery.
+Random ISNs prevent issues like port number reuse and TCP sequence number prediction attacks. If a connection's ISN was always 0, an attacker could easily guess valid sequence numbers. Randomizing the ISN makes it much harder for attackers to inject counterfeit packets into an existing TCP connection.

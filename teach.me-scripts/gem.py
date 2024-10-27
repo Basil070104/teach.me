@@ -45,7 +45,7 @@ class Gem:
 
         response = chat_session.send_message(self.data)
 
-        print(response.text)
+        # print(response.text)
 
         self.response = response.text
 

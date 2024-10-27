@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, SkipBack, SkipForward } from "lucide-react"
 import { Loader2 } from 'lucide-react'
+import { MessageCircle, X } from 'lucide-react';
 
 interface FileData {
   url: string
@@ -31,6 +32,7 @@ export default function FilePage() {
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState('');
   const [refer, setRefer] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   let temp = ''
 
@@ -116,7 +118,7 @@ export default function FilePage() {
 
     fetchFileData()
 
-  }, [id])
+  }, [])
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying)
@@ -222,6 +224,34 @@ export default function FilePage() {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        <div className="fixed bottom-16 right-16">
+          {/* Chat Window */}
+          {isOpen && (
+            <Card className="absolute bottom-16 right-0 w-80 h-96 bg-white shadow-lg rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="font-semibold">Chat</h3>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4 h-72 overflow-y-auto">
+                <p className="text-gray-600">Chat content goes here...</p>
+              </div>
+            </Card>
+          )}
+
+          {/* Circle Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-12 h-12 bg-slate-900 hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors"
+          >
+            <MessageCircle size={24} />
+          </button>
         </div>
       </main>
 
