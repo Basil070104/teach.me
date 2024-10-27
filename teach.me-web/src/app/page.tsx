@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import AOS from 'aos';
 import 'aos/dist/aos.css'; // Import AOS styles
 
+
 export default function Home() {
   const router = useRouter()
   const [imageUrl, setImageUrl] = useState('')

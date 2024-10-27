@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button"
 import { Play, Pause, SkipBack, SkipForward } from "lucide-react"
 import { Loader2 } from 'lucide-react'
 import { MessageCircle, X } from 'lucide-react';
+import { useChat } from "@nlxai/chat-react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface FileData {
   url: string
@@ -217,7 +220,7 @@ export default function FilePage() {
 
                   <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
                     {
-                      refer
+                      { refer }
                     }
                   </textarea>
                 </>
