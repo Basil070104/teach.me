@@ -13,6 +13,7 @@ import { AlertCircle, FileText } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import ParticleBackground from '@/components/ui/ParticleBackground'
 
 
 export default function Home() {
@@ -51,7 +52,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-black font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8  font-[family-name:var(--font-geist-sans)]">
+      {/* <ParticleBackground /> */}
       <header className={`text-center mb-20 ${logoAnimated ? 'animate-logo-slide' : ''}`} data-aos="fade-down">
         <Image
           src="/TeachMe-logo.png"
@@ -61,7 +63,7 @@ export default function Home() {
           className={`mx-auto mb-6 ${logoAnimated ? 'shrink-logo' : ''}`}
         />
         <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-          TeachMe is for when your professor doesn't upload the lectures.
+          Make education and learning more interactive with Teach Me
         </p>
       </header>
       <main className="w-full max-w-md relative" data-aos="zoom-in-up">
@@ -69,7 +71,7 @@ export default function Home() {
         <div className="relative">
           {/* Shadow card behind */}
           <Card className="absolute inset-0 transform translate-x-0 translate-y-0 redBoxShadow" aria-hidden="true"></Card>
-          
+
           {/* Main card in the foreground */}
           <Card className="bg-red relative">
             <CardHeader>
