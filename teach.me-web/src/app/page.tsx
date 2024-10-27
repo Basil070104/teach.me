@@ -47,8 +47,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-zinc-100 to-white font-[family-name:var(--font-geist-sans)]">
-      <header className="text-center mb-12" data-aos="fade-down">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gray-900 font-[family-name:var(--font-geist-sans)]">
+      <header className="text-center mb-20" data-aos="fade-down">
         <Image
           src="/TeachMe-logo.png"
           alt="TeachMe"
@@ -60,50 +60,57 @@ export default function Home() {
           TeachMe is for when your professor doesn't upload the lectures.
         </p>
       </header>
-      <main className="w-full max-w-md" data-aos="fade-up">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Upload Content</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="file" className="w-full">
-              <TabsContent value="file">
-                <div className="space-y-4">
-                  <Label htmlFor="file-upload" className="block">Upload PDF</Label>
-                  <div className="flex items-center justify-center w-full">
-                    <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-zinc-50 hover:bg-zinc-100" data-aos="zoom-in">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <FileText className="w-10 h-10 mb-3 text-zinc-400" />
-                        <p className="mb-2 text-sm text-zinc-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-zinc-500">PDF files only (MAX. 10MB)</p>
-                      </div>
-                      <Input
-                        id="file-upload"
-                        type="file"
-                        className="hidden"
-                        onChange={handleFileUpload}
-                        accept=".pdf"
-                      />
-                    </label>
+      <main className="w-full max-w-md relative" data-aos="zoom-in-up">
+        {/* Wrapper div for positioning the two cards */}
+        <div className="relative">
+          {/* Shadow card behind */}
+          <Card className="absolute inset-0 transform translate-x-0 translate-y-0 redBoxShadow" aria-hidden="true"></Card>
+          
+          {/* Main card in the foreground */}
+          <Card className="bg-red relative">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center">Upload Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="file" className="w-full">
+                <TabsContent value="file">
+                  <div className="space-y-4">
+                    <Label htmlFor="file-upload" className="block">Upload PDF</Label>
+                    <div className="flex items-center justify-center w-full">
+                      <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-zinc-50 hover:bg-zinc-100" data-aos="zoom-in">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <FileText className="w-10 h-10 mb-3 text-zinc-400" />
+                          <p className="mb-2 text-sm text-zinc-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                          <p className="text-xs text-zinc-500">PDF files only (MAX. 10MB)</p>
+                        </div>
+                        <Input
+                          id="file-upload"
+                          type="file"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                          accept=".pdf"
+                        />
+                      </label>
+                    </div>
+                    {fileName && (
+                      <p className="text-sm text-zinc-600" data-aos="fade-right">Selected file: {fileName}</p>
+                    )}
+                    {fileError && (
+                      <Alert variant="destructive" data-aos="fade-left">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{fileError}</AlertDescription>
+                      </Alert>
+                    )}
                   </div>
-                  {fileName && (
-                    <p className="text-sm text-zinc-600" data-aos="fade-right">Selected file: {fileName}</p>
-                  )}
-                  {fileError && (
-                    <Alert variant="destructive" data-aos="fade-left">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Error</AlertTitle>
-                      <AlertDescription>{fileError}</AlertDescription>
-                    </Alert>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <p className="text-sm text-zinc-500" data-aos="fade-in">TeachMe 2024 - Empowering Education</p>
-          </CardFooter>
-        </Card>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+              <p className="text-sm text-zinc-500" data-aos="fade-in">TeachMe 2024 - Empowering Education</p>
+            </CardFooter>
+          </Card>
+        </div>
       </main>
     </div>
   )

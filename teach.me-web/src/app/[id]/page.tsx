@@ -128,7 +128,7 @@ export default function FilePage() {
               ) : (
                 <AspectRatio ratio={16 / 9}>
                   <video
-                    src={fileData?.url || "/path/to/your-video.mp4"}
+                    src="/cat.mp4"
                     controls
                     className="rounded-md object-cover w-full h-full"
                   >
