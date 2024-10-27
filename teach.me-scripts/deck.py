@@ -192,6 +192,7 @@ class Deck:
             f"transcripts/lecture_test.txt", slide_narration
         )
         f.close()
+        self.transcript_to_video(f"transcripts/lecture_test.txt", slide_narration)
 
         return True, audio
 

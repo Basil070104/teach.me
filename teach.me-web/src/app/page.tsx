@@ -63,10 +63,10 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              {/* <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="file">File Upload</TabsTrigger>
                 <TabsTrigger value="url">Image URL</TabsTrigger>
-              </TabsList>
+              </TabsList> */}
               <TabsContent value="file">
                 <div className="space-y-4">
                   <Label htmlFor="file-upload" className="block">Upload PDF</Label>

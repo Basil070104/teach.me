@@ -6,7 +6,11 @@ import { ref, get } from 'firebase/database'
 import { useParams } from 'next/navigation'
 import Image from "next/image"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import TranscriptGenerator from '../../components/ui/transcript';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
+import { Play, Pause, SkipBack, SkipForward } from "lucide-react"
 
 interface FileData {
   url: string
@@ -19,6 +23,8 @@ export default function FilePage() {
   const { id } = useParams()
   const [fileData, setFileData] = useState<FileData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [progress, setProgress] = useState(0)
 
   const [loadTran, setLoadTran] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -77,79 +83,93 @@ export default function FilePage() {
 
   }, [id])
 
-  if (loading) {
-    return <p>Loading...</p>
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying)
+    // Here you would typically start or pause the actual audio playback
+  }
+
+  const handleProgressChange = (newValue: number[]) => {
+    setProgress(newValue[0])
+    // Here you would typically seek the audio to the new position
   }
 
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <header className="flex flex-col items-center justify-center">
-        <Image
-          src="/TeachMe-logo.png"
-          alt="TeachMe"
-          width={300}
-          height={80}
-        />
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-100 to-white font-[family-name:var(--font-geist-sans)]">
+      <header className="py-4 bg-white shadow-sm">
+        <div className="container mx-auto px-4">
+          <Image
+            src="/TeachMe-logo.png"
+            alt="TeachMe"
+            width={150}
+            height={40}
+            className="mx-auto"
+          />
+        </div>
       </header>
 
-      <main className="grid gap-8">
-        <section className="w-full max-w-[800px] mx-auto">
-          <AspectRatio ratio={16 / 9}>
-            <video
-              src="/path/to/your-video.mp4"
-              controls
-              autoPlay
-              loop
-              muted
-              className="rounded-md object-cover w-full h-full"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </AspectRatio>
-        </section>
+      <main className="flex-grow container mx-auto px-4 py-6">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="lg:col-span-1">
+            <CardHeader className="pb-2">
+              <CardTitle>Video Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <Skeleton className="w-full aspect-video rounded-md" />
+              ) : (
+                <AspectRatio ratio={16 / 9}>
+                  <video
+                    src={fileData?.url || "/path/to/your-video.mp4"}
+                    controls
+                    className="rounded-md object-cover w-full h-full"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </AspectRatio>
+              )}
+            </CardContent>
+          </Card>
 
-        <section className="w-full max-w-[900px] mx-auto">
-          {fileData?.url ? (
-            <iframe
-              src={fileData.url}
-              className="w-full h-[600px] border-none"
-              title="PDF Viewer"
-            >
-              This browser does not support PDFs. Please download the PDF to view it:
-              <a href={fileData.url}>Download PDF</a>
-            </iframe>
-          ) : (
-            <p>No PDF available.</p>
-          )}
-        </section>
-
-        <div>
-          {/* <TranscriptGenerator /> */}
-          {error && (
-            <div>
-              Alert Failed to Fetch Transcript
-            </div>
-          )}
-
-          {transcript && (
-            <div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Generated Transcript:</h3>
-              <div className="mt-4 w-full h-72 bg-white text-black 
-          border border-white/30
-          shadow-[0_0_15px_rgba(255,255,255,0.1)]
-          placeholder-gray-400 resize-none rounded-sm overflow-y-auto">
-
-                <div className="bg-muted p-4 rounded-lg whitespace-pre-wrap relative text-left">
-                  {transcript}
-                </div>
-              </div>
-            </div>
-          )}
+          <Card className="lg:col-span-1 flex flex-col">
+            <CardHeader className="pb-2">
+              <CardTitle>Transcript Generator</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow flex flex-col">
+              {loading ? (
+                <Skeleton className="w-full h-full" />
+              ) : (
+                <>
+                  <div className="bg-zinc-100 p-3 rounded-md mb-4 flex items-center space-x-2">
+                    <Button onClick={togglePlayPause} variant="ghost" size="sm" className="p-1">
+                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    </Button>
+                    <Slider
+                      value={[progress]}
+                      max={100}
+                      step={1}
+                      onValueChange={handleProgressChange}
+                      className="flex-grow"
+                    />
+                    <div className="text-xs text-zinc-500 w-16 text-right">
+                      {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
+                    </div>
+                  </div>
+                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+                    {/* <p className="text-zinc-600">
+                      Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
+                    </p> */}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </main>
 
-      <footer>
-        {/* Add footer content if needed */}
+      <footer className="py-4 bg-zinc-100">
+        <div className="container mx-auto px-4 text-center text-zinc-600 text-sm">
+          <p>&copy; 2024 TeachMe. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   )
