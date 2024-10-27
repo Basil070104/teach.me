@@ -1,4 +1,6 @@
 
-This unofficial academic transcript for Yuwen Ding shows his current program as Major Concentration in the Major and Department of Computer Science at the College of Computing. The transcript lists the courses Yuwen has taken at Georgia Tech, including computer science, math, and various electives, along with the corresponding credit hours and grades.
+Today we'll review some basic 3D surfaces: lines, parabolas, ellipses, and hyperbolas. Each is defined by a specific equation, as shown in the examples. Note the special case for the ellipse and hyperbola equations when the coefficients a and b are equal, resulting in a circle.
 
-This slide breaks down Yuwen's current term courses, including English Composition I, Data Structures & Algorithms, Computer Sci Elective, and more. The transcript totals show Yuwen has earned 73 credit hours so far. The bottom lists Yuwen's planned courses for Fall 2024 in the Computer Science major.
+Cylinders are 3D shapes formed by extending a 2D curve into the third dimension. A "BLAH" 2D curve becomes a "BLAH cylinder" in 3D. Examples:
+(a) Extending a circle (x^2 + y^2 = 1) in the z-direction forms a circular cylinder.
+(b) Extending a cosine curve (z = cos(x)) in the y-direction forms a cosine cylinder.
