@@ -245,9 +245,10 @@ export default function FilePage() {
         <div className="fixed bottom-16 right-16">
           {/* Chat Window */}
           {isOpen && (
-            <Card className="absolute bottom-16 right-0 w-80 h-96 bg-white shadow-lg rounded-lg overflow-hidden">
+            <Card className="fixed bottom-[calc(64px+10px)] right-[16px] w-80 h-96 bg-black shadow-lg rounded-lg overflow-hidden z-[60]"
+            data-aos="fade-left">
               <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="font-semibold">Chat</h3>
+                <h3 className="text-zinc-200 font-semibold">Chat</h3>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-gray-500 hover:text-gray-700"
@@ -256,18 +257,18 @@ export default function FilePage() {
                 </button>
               </div>
               <div className="p-4 h-72 overflow-y-auto">
-                <p className="text-gray-600">Chat content goes here...</p>
+                <p className="text-zinc-200">Chat content goes here...</p>
               </div>
             </Card>
           )}
 
           {/* Circle Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-12 h-12 bg-slate-900 hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors"
-          >
-            <MessageCircle size={24} />
-          </button>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="fixed bottom-[16px] right-[16px] w-[40px] h-[40px] bg-black hover:bg-slate-950 rounded-full flex items-center justify-center text-white shadow-lg transition-colors z-[60]"
+        >
+          <MessageCircle size={24} />
+        </button>
         </div>
       </main>
 
