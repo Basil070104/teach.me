@@ -4,11 +4,14 @@ import google.generativeai as genai
 
 class Gem:
 
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
+        self.response = ""
+
+    def run(self):
+
+        print("----- GETTING REFERENCES -----")
         genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-
-    def run(self, data):
-
         # Create the model
         generation_config = {
             "temperature": 1,
@@ -28,7 +31,7 @@ class Gem:
                 {
                     "role": "user",
                     "parts": [
-                        "give more information on a topic by linking urls based on some information",
+                        "give more information on a topic by linking urls based on some information and don't use markdown please just plain text",
                     ],
                 },
                 {
@@ -40,6 +43,15 @@ class Gem:
             ]
         )
 
-        response = chat_session.send_message(data)
+        response = chat_session.send_message(self.data)
 
         print(response.text)
+
+        self.response = response.text
+
+        return response.text
+
+
+if __name__ == "__main__":
+    object = Gem("I want to know more about the process of systhesis")
+    object.run()

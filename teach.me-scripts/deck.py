@@ -184,7 +184,7 @@ class Deck:
             # If you want to see the narration we produced, uncomment the below line
             # print(narration)
             early_break += 1
-            if early_break == 2:
+            if early_break == 5:
                 break
 
         slide_narration = self.build_previous_slides_prompt(previous_slide_narratives)

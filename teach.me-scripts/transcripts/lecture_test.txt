@@ -1,5 +1,4 @@
 
-This lab covers distributed routing protocols. You'll implement network routing and forwarding using routing tables. Routers forward data packets between source and destination nodes. You'll also do the Honors milestone, extending the Link State routing protocol. The source code will run in a simulated network environment.
+Welcome to ECE 46300, Transport Layer III, for Fall 2024. In this course, we will explore the intricacies of the transport layer in computer networks. I'm your instructor, Vishal Shrivastav, and I look forward to guiding you through this fascinating topic as we delve into the core concepts and protocols.
 
-This slide explains how to run the Python code for the lab. Use the provided JSON configuration files to specify the simulated network setup. Run the Distance Vector routing with "python3 network.py 01.json DV" and run the Link State routing for Honors milestone with "python3 network.py 01.json LS".
- submitting.
+TCP provides reliable, in-order delivery to applications through features like application multiplexing, ACKs and retransmissions, flow control, and congestion control. TCP uses byte stream abstraction, communicating with applications using a byte stream rather than packets. TCP is connection-oriented, establishing a pairwise sender-receiver connection before sending data.

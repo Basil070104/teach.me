@@ -29,6 +29,9 @@ export default function FilePage() {
   const [loadTran, setLoadTran] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState('');
+  const [refer, setRefer] = useState('');
+
+  let temp = ''
 
   const startTranscription = async (data: any) => {
     setLoadTran(true);
@@ -36,7 +39,7 @@ export default function FilePage() {
     setTranscript('');
     try {
       const send = { pdf: data };
-      const response = await fetch(`${API_BASE_URL}/get_transcript`, {
+      const response = await fetch(`${API_BASE_URL}get_transcript`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -48,6 +51,7 @@ export default function FilePage() {
 
       if (response.status == true) {
         setTranscript(response.message);
+        temp = response.message
         setLoadTran(false);
       }
       else {
@@ -57,6 +61,35 @@ export default function FilePage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setLoadTran(false);
+    }
+
+
+  };
+
+  const getRef = async () => {
+    setRefer('');
+    console.log(temp);
+    const data = { "text": temp }
+    try {
+      const response = await fetch(`${API_BASE_URL}get_references`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching data:', error));
+
+      if (response.status == true) {
+        setRefer(response.message);
+      }
+      else {
+        throw new Error('Failed to get transcript');
+      }
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
 
 
@@ -74,7 +107,8 @@ export default function FilePage() {
         } else {
           console.error('No file found for this ID.')
         }
-        startTranscription(data)
+        await startTranscription(data)
+        await getRef()
         setLoading(false)
       }
     }
@@ -154,21 +188,21 @@ export default function FilePage() {
                       {Math.floor(progress / 60)}:{(progress % 60).toString().padStart(2, '0')} / 10:00
                     </div>
                   </div>
-                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
+                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto">
                     {/* <p className="text-zinc-600">
                       Transcript will appear here as the audio plays. The content will be automatically generated and displayed in real-time.
                     </p> */}
                     {
                       transcript
                     }
-                  </div>
+                  </textarea>
                 </>
               )}
             </CardContent>
           </Card>
         </div>
         <div >
-          <Card className="lg:col-span-1 flex flex-col mt-4 h-60">
+          <Card className="lg:col-span-1 flex flex-col mt-4 h-fit min-h-60">
             <CardHeader className="pb-2">
               <CardTitle>Extra Information for Guidance</CardTitle>
             </CardHeader>
@@ -178,9 +212,11 @@ export default function FilePage() {
               ) : (
                 <>
 
-                  <div className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
-
-                  </div>
+                  <textarea readOnly className="bg-white p-4 rounded-md border flex-grow overflow-y-auto h-full">
+                    {
+                      refer
+                    }
+                  </textarea>
                 </>
               )}
             </CardContent>
